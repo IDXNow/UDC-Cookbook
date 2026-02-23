@@ -1,0 +1,13 @@
+TransactionID|AccountName|TransactionDate|Description|Amount|DebitCredit|Category|Subcategory|TaxDeductible|VendorName
+TXN-90001|Acme Corporation|2025-01-03|AMZN MKTP US*2K7YR4QT1 AMZN.COM/BILL WA|247.83|Debit|Office Supplies|General Supplies|Yes|Amazon
+TXN-90002|Acme Corporation|2025-01-06|ADP PAYROLL FEES 0106 ADP TAX SERVICES|1850.00|Debit|Professional Services|Payroll Services|Yes|ADP
+TXN-90003|Acme Corporation|2025-01-06|GUSTO PAY 250106 GUSTO.COM PAYROLL|34520.75|Debit|Payroll|Salaries and Wages|Yes|Gusto
+TXN-90004|Acme Corporation|2025-01-08|DUKE ENERGY CAROLINAS 843-991-2100 SC|1284.50|Debit|Utilities|Electric|Yes|Duke Energy
+TXN-90005|Acme Corporation|2025-01-08|COMCAST BUSINESS 800-391-3000 PA|489.99|Debit|Utilities|Internet and Telecom|Yes|Comcast Business
+TXN-90006|Acme Corporation|2025-01-10|DEPOSIT CUSTOMER PAYMENT REF#INV-2025-0041|8750.00|Credit|Revenue|Customer Payment|No|Customer Payment
+TXN-90009|Acme Corporation|2025-01-15|UNITED AIRLINES 016-2198745612|1423.60|Debit|Travel|Airfare|Yes|United Airlines
+TXN-90010|Acme Corporation|2025-01-15|MARRIOTT CHICAGO DT 312-555-0199 IL|687.44|Debit|Travel|Lodging|Yes|Marriott
+TXN-90012|Acme Corporation|2025-01-20|INTERNAL REVENUE SVC USATAXPYMT 250120|4200.00|Debit|Taxes|Federal Income Tax|No|IRS
+TXN-90014|Acme Corporation|2025-01-22|ZOOM.US 888-799-9666 CA|219.90|Debit|Software|SaaS Subscription|Yes|Zoom
+TXN-90018|Acme Corporation|2025-01-28|GEICO AUTO INS PREM 800-841-3000|1245.00|Debit|Insurance|Vehicle Insurance|Yes|GEICO
+TXN-90019|Acme Corporation|2025-01-29|UBER TRIP 7X9K2 HELP.UBER.COM|34.50|Debit|Travel|Ground Transportation|Yes|Uber

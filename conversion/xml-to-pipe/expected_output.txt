@@ -1,0 +1,6 @@
+SKU|ProductName|Brand|QuantityOnHand|Status|RetailPrice
+ELEC-5512|Ultra HD Smart Television|TechVision|45|Active|1499.99
+FURN-8871|Ergonomic Office Chair|ComfortWorks|78|Active|249.99
+APPL-3390|Smart Refrigerator|ColdTech|8|Low Stock|2399.99
+SPORT-4562|Carbon Fiber Mountain Bike|AlpineRider|12|Active|3199.99
+TOOL-6734|Cordless Power Drill Set|PowerMaster|5|Discontinued|129.99

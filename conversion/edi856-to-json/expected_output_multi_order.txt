@@ -1,0 +1,221 @@
+{
+  "interchange": {
+    "sender_id": "DISTCENTER01",
+    "receiver_id": "BIGRETAILER",
+    "date": "20240118",
+    "time": "0845",
+    "control_number": "000000127"
+  },
+  "functional_group": {
+    "sender_code": "DISTCENTER01",
+    "receiver_code": "BIGRETAILER",
+    "date": "20240118",
+    "time": "0845",
+    "group_control": "127"
+  },
+  "transaction": {
+    "control_number": "0001",
+    "purpose": "00"
+  },
+  "shipment": {
+    "asn_number": "ASN-2024-0127",
+    "asn_date": "20240118",
+    "asn_time": "0845",
+    "shipped_date": "20240118",
+    "estimated_delivery": "20240120",
+    "carrier": {
+      "scac": "FEDX",
+      "name": null,
+      "transport_method": "M",
+      "service_level": "GROUND",
+      "tracking_number": "794644790301",
+      "bol_number": "BOL-2024-0089",
+      "trailer_number": "TRLR-44521"
+    },
+    "packaging": {
+      "type": "PLT",
+      "count": 3,
+      "weight": 2400,
+      "weight_uom": "LB"
+    },
+    "references": {
+      "package_id": "PKG-2024-0127"
+    },
+    "ship_from": {
+      "name": "MIDWEST DISTRIBUTION CENTER",
+      "id_type": "92",
+      "id": "DC-MW-001",
+      "address": {
+        "line1": "2500 LOGISTICS BOULEVARD",
+        "line2": null,
+        "city": "CHICAGO",
+        "state": "IL",
+        "postal": "60601",
+        "country": "US"
+      },
+      "contact": {
+        "name": "SHIPPING DEPT",
+        "phone": "3125551234",
+        "email": null
+      }
+    },
+    "ship_to": {
+      "name": "MEGAMART STORE 1547",
+      "id_type": "92",
+      "id": "1547",
+      "address": {
+        "line1": "8900 COMMERCE WAY",
+        "line2": null,
+        "city": "DETROIT",
+        "state": "MI",
+        "postal": "48201",
+        "country": "US"
+      },
+      "contact": {
+        "name": null,
+        "phone": null,
+        "email": null
+      }
+    },
+    "buyer": {
+      "name": "MEGAMART CORPORATE",
+      "id_type": "1",
+      "id": "987654321"
+    }
+  },
+  "orders": [
+    {
+      "po_number": "MM-PO-2024-55123",
+      "po_date": "20240110",
+      "invoice_number": "INV-MM-77801",
+      "vendor_number": "DISTCENTER01",
+      "items": [
+        {
+          "line_number": 1,
+          "identifiers": {
+            "upc": "098765432109",
+            "vendor_part": "ELEC-TV-55-4K",
+            "buyer_sku": "MM-SKU-44521",
+            "manufacturer": null
+          },
+          "description": "55 INCH 4K SMART TV",
+          "quantity_shipped": 24,
+          "quantity_ordered": 24,
+          "uom": "EA",
+          "lot_number": "LOT2024A",
+          "serial_number": null,
+          "expiration_date": "20251231",
+          "backorder_qty": null,
+          "backorder_date": null,
+          "pricing": {
+            "type": null,
+            "unit_price": null
+          }
+        },
+        {
+          "line_number": 2,
+          "identifiers": {
+            "upc": "098765432116",
+            "vendor_part": "ELEC-SOUND-BAR",
+            "buyer_sku": "MM-SKU-44522",
+            "manufacturer": null
+          },
+          "description": "PREMIUM SOUNDBAR 2.1CH",
+          "quantity_shipped": 36,
+          "quantity_ordered": 36,
+          "uom": "EA",
+          "lot_number": "LOT2024B",
+          "serial_number": null,
+          "expiration_date": null,
+          "backorder_qty": null,
+          "backorder_date": null,
+          "pricing": {
+            "type": null,
+            "unit_price": null
+          }
+        }
+      ]
+    },
+    {
+      "po_number": "MM-PO-2024-55124",
+      "po_date": "20240112",
+      "invoice_number": "INV-MM-77802",
+      "vendor_number": "DISTCENTER01",
+      "items": [
+        {
+          "line_number": 3,
+          "identifiers": {
+            "upc": "055512340018",
+            "vendor_part": "APPL-BLENDER-PRO",
+            "buyer_sku": "MM-SKU-33100",
+            "manufacturer": null
+          },
+          "description": "PROFESSIONAL BLENDER 1500W",
+          "quantity_shipped": 48,
+          "quantity_ordered": 48,
+          "uom": "EA",
+          "lot_number": null,
+          "serial_number": null,
+          "expiration_date": null,
+          "backorder_qty": null,
+          "backorder_date": null,
+          "pricing": {
+            "type": null,
+            "unit_price": null
+          }
+        },
+        {
+          "line_number": 4,
+          "identifiers": {
+            "upc": "055512340025",
+            "vendor_part": "APPL-MIXER-STD",
+            "buyer_sku": "MM-SKU-33101",
+            "manufacturer": null
+          },
+          "description": "STAND MIXER 5QT WHITE",
+          "quantity_shipped": 60,
+          "quantity_ordered": 60,
+          "uom": "EA",
+          "lot_number": null,
+          "serial_number": null,
+          "expiration_date": null,
+          "backorder_qty": null,
+          "backorder_date": null,
+          "pricing": {
+            "type": null,
+            "unit_price": null
+          }
+        },
+        {
+          "line_number": 5,
+          "identifiers": {
+            "upc": "055512340032",
+            "vendor_part": "APPL-TOASTER-4SL",
+            "buyer_sku": "MM-SKU-33102",
+            "manufacturer": null
+          },
+          "description": "4-SLICE TOASTER STAINLESS",
+          "quantity_shipped": 72,
+          "quantity_ordered": 72,
+          "uom": "EA",
+          "lot_number": null,
+          "serial_number": null,
+          "expiration_date": null,
+          "backorder_qty": null,
+          "backorder_date": null,
+          "pricing": {
+            "type": null,
+            "unit_price": null
+          }
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "hl_total_count": 8,
+    "hl_item_count": 5,
+    "quantity_hash": 240,
+    "amount": null,
+    "segment_count": 52
+  }
+}

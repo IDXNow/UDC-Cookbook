@@ -1,0 +1,6 @@
+InvoiceID|CustomerID|CustomerName|InvoiceDate|DueDate|TotalAmount|PaymentStatus
+INV-2025-0001|CUST001|Acme Corporation|2025-01-15|2025-02-14|1253.62|Paid
+INV-2025-0002|CUST045|TechSolutions Inc|2025-01-18|2025-02-17|3809.38|Pending
+INV-2025-0003|CUST078|Global Retail Partners|2025-01-20|2025-02-19|977.93|Overdue
+INV-2025-0004|CUST102|Northern Healthcare|2025-01-25|2025-02-24|4822.72|Paid
+INV-2025-0005|CUST156|Pacific Construction|2025-01-28|2025-02-27|11568.75|Pending

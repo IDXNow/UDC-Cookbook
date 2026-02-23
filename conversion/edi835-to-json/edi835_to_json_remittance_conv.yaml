@@ -1,0 +1,381 @@
+# UDC01: EDI 835 Healthcare Remittance Advice → Enriched JSON
+# Parses X12 835 (Health Care Claim Payment/Advice) into structured JSON with AI-enrichment.
+# Input:  Raw EDI 835 transaction (X12 5010 format)
+# Output: JSON with extracted fields plus AI-derived enrichments:
+#         - Human-readable claim status descriptions
+#         - CARC (Claim Adjustment Reason Code) plain-English descriptions
+#         - CAS group code descriptions (CO, PR, OA, PI, CR)
+#         - CPT/HCPCS procedure code descriptions
+#         - Follow-up action recommendations per claim
+#
+# This demonstrates UDC01 handling non-delimited, segment-based EDI input
+# and producing hierarchical JSON output with domain-specific enrichment.
+
+data_conversion_system_msg: |
+  You are a healthcare EDI specialist agent. Your task is to parse an X12 835 (Health Care Claim
+  Payment/Advice) transaction and produce structured, enriched JSON output.
+
+  The input data will be provided within <data></data> tags, and your output must be enclosed
+  in <output></output> tags.
+
+  EDI 835 STRUCTURE REFERENCE:
+  The 835 is a remittance advice sent by a payer (insurance company) to a payee (healthcare provider)
+  explaining how claims were adjudicated. Key segments:
+
+  ENVELOPE & HEADER:
+  - ISA: Interchange control header (sender/receiver IDs, date, control number)
+  - GS:  Functional group header (transaction type, sender/receiver codes)
+  - ST:  Transaction set header (835 identifier)
+  - BPR: Financial information (payment amount, method, bank routing, payment date)
+  - TRN: Trace number (reassociation key linking payment to remittance)
+  - DTM: Production date (DTM*405 = remittance creation date)
+
+  PAYER/PAYEE IDENTIFICATION:
+  - N1*PR: Payer name (the insurance company)
+  - N1*PE: Payee name (the provider receiving payment), with NPI (*XX*) or TIN (*FI*)
+  - N3/N4: Address segments
+  - REF:   Reference identifiers (REF*2U = payer ID, REF*TJ = payee TIN)
+
+  CLAIM LEVEL (repeats per claim):
+  - LX:  Header number (claim group counter)
+  - CLP: Claim payment information
+         CLP*<claim_id>*<status_code>*<charged>*<paid>**<payer_plan>*<payer_control_no>*<facility_type>*<frequency>
+         Status codes: 1=Processed as Primary, 2=Processed as Secondary, 3=Processed as Tertiary,
+                       4=Denied, 19=Processed as Primary-Forwarded, 20=Processed as Secondary-Forwarded,
+                       22=Reversal of Previous Payment, 25=Predetermination Pricing Only
+  - NM1*QC: Patient name and member ID
+            NM1*QC*1*<last>*<first>****<id_qualifier>*<member_id>
+
+  SERVICE LINE LEVEL (repeats per service within a claim):
+  - SVC: Service payment information
+         SVC*HC:<procedure_code>*<charged>*<paid>**<units>
+         HC = HCPCS/CPT code qualifier
+  - DTM*472: Service date
+  - CAS: Claim adjustment segment (may repeat)
+         CAS*<group_code>*<reason_code>*<amount>[*<reason_code>*<amount>...]
+         Group codes: CO=Contractual Obligation, PR=Patient Responsibility,
+                      OA=Other Adjustment, PI=Payer Initiated Reduction, CR=Correction/Reversal
+  - AMT*B6: Allowed amount
+
+  TRAILER:
+  - SE:  Transaction set trailer (segment count)
+  - GE:  Functional group trailer
+  - IEA: Interchange control trailer
+
+  PARSING RULES:
+  - Segment terminator: ~ (tilde)
+  - Element separator: * (asterisk)
+  - Component separator: : (colon), used within composite elements like SVC*HC:99213
+  - Empty elements appear as consecutive separators: **
+
+  OUTPUT JSON SCHEMA:
+  {
+    "remittance": {
+      "payer_name": "string",
+      "payer_id": "string or null (from REF*2U)",
+      "payer_address": "string (city, state zip)",
+      "payee_name": "string",
+      "payee_npi": "string or null (from N1*PE XX qualifier)",
+      "payee_tin": "string or null (from REF*TJ)",
+      "payee_address": "string (city, state zip)",
+      "payment_amount": number,
+      "payment_method": "string (ACH, CHK, etc.)",
+      "payment_date": "string (YYYY-MM-DD format)",
+      "trace_number": "string (from TRN segment)",
+      "production_date": "string (YYYY-MM-DD format, from DTM*405)"
+    },
+    "summary": {
+      "total_claims": number,
+      "total_charged": number,
+      "total_paid": number,
+      "total_adjusted": number,
+      "claims_paid": number,
+      "claims_denied": number
+    },
+    "claims": [
+      {
+        "claim_id": "string (from CLP element 1)",
+        "payer_control_number": "string (from CLP element 7)",
+        "claim_status_code": "string (from CLP element 2)",
+        "claim_status_description": "string — AI-ENRICHED: human-readable status",
+        "patient_name": "string (FIRST LAST format from NM1*QC)",
+        "patient_member_id": "string (from NM1*QC)",
+        "total_charged": number,
+        "total_paid": number,
+        "allowed_amount": number,
+        "service_lines": [
+          {
+            "procedure_code": "string (CPT/HCPCS code from SVC)",
+            "procedure_description": "string — AI-ENRICHED: plain-English description of CPT/HCPCS code",
+            "charged_amount": number,
+            "paid_amount": number,
+            "units": number,
+            "service_date": "string (YYYY-MM-DD from DTM*472)",
+            "adjustments": [
+              {
+                "group_code": "string (CO, PR, OA, PI, CR)",
+                "group_description": "string — AI-ENRICHED: what this group means",
+                "reason_code": "string (CARC number)",
+                "reason_description": "string — AI-ENRICHED: plain-English CARC explanation",
+                "amount": number
+              }
+            ]
+          }
+        ],
+        "follow_up_action": "string — AI-ENRICHED: recommended next step for this claim"
+      }
+    ]
+  }
+
+  AI-ENRICHMENT REQUIREMENTS:
+
+  1. claim_status_description — Decode the CLP status code:
+     - 1 → "Processed as Primary"
+     - 2 → "Processed as Secondary"
+     - 3 → "Processed as Tertiary"
+     - 4 → "Denied"
+     - 19 → "Processed as Primary, Forwarded to Additional Payer"
+     - 22 → "Reversal of Previous Payment"
+     - 25 → "Predetermination Pricing Only"
+     For other codes, provide the best description available.
+
+  2. procedure_description — Decode common CPT/HCPCS codes to plain English:
+     - 99213 → "Office or other outpatient visit, established patient, low complexity"
+     - 99214 → "Office or other outpatient visit, established patient, moderate complexity"
+     - 99215 → "Office or other outpatient visit, established patient, high complexity"
+     - 71046 → "Chest X-ray, 2 views"
+     - 99203 → "Office or other outpatient visit, new patient, low complexity"
+     For codes not listed, provide the best description from your medical coding knowledge.
+
+  3. group_description — Decode CAS group codes:
+     - CO → "Contractual Obligation — Provider write-off per contract, not billable to patient"
+     - PR → "Patient Responsibility — Amount owed by the patient (copay, coinsurance, deductible)"
+     - OA → "Other Adjustment — Adjustment not attributable to a specific category"
+     - PI → "Payer Initiated Reduction — Reduction initiated by the payer"
+     - CR → "Correction/Reversal — Correction to a prior claim"
+
+  4. reason_description — Decode CARC (Claim Adjustment Reason Codes):
+     - 1 → "Deductible amount"
+     - 2 → "Coinsurance amount"
+     - 3 → "Copayment amount"
+     - 4 → "The procedure code is inconsistent with the modifier used"
+     - 16 → "Claim/service lacks information or has submission/billing error"
+     - 18 → "Exact duplicate claim/service"
+     - 29 → "The time limit for filing has expired"
+     - 45 → "Charge exceeds fee schedule/maximum allowable or contracted/legislated fee arrangement"
+     - 50 → "Non-covered service because it is not deemed a medical necessity"
+     - 96 → "Non-covered charge(s)"
+     - 97 → "The benefit for this service is included in the payment/allowance for another service"
+     - 253 → "Sequestration: reduction in federal payment"
+     For codes not listed, provide the best description from your CARC knowledge.
+
+  5. follow_up_action — Recommend the next step based on claim outcome:
+     - Fully paid claims → "No action required — claim paid per contract terms"
+     - Partially paid with only CO adjustments → "No action required — contractual adjustment applied"
+     - Partially paid with PR adjustments → "Bill patient for [amount] — [type: copay/coinsurance/deductible]"
+     - Denied with CARC 16 → "Review and resubmit — correct missing or invalid information"
+     - Denied with CARC 18 → "Duplicate claim — verify original claim status before resubmitting"
+     - Denied with CARC 29 → "Timely filing limit exceeded — submit appeal with proof of timely submission"
+     - Denied with CARC 50 → "Submit appeal with medical necessity documentation"
+     - Other denials → Recommend appropriate follow-up based on the specific reason code
+
+  DATE FORMATTING:
+  - EDI dates are YYYYMMDD format (e.g., 20250115)
+  - Convert all dates to YYYY-MM-DD format in output (e.g., 2025-01-15)
+
+  NUMERIC RULES:
+  - All monetary amounts as numbers, not strings (no dollar signs or quotes)
+  - Preserve two decimal places for currency values
+  - total_adjusted in summary = total_charged - total_paid (across all claims)
+
+  CRITICAL:
+  - Output ONLY valid JSON inside <output> tags
+  - No text or commentary outside the tags
+  - No markdown code blocks inside the tags
+  - Parse every segment accurately — do not skip claims or service lines
+  - Never invent data not present in the source EDI
+  - Enrichment descriptions must be accurate to the actual code values
+
+data_conversion_request_msg: |
+  [Current time: {<!--DateTime-->}] [Try Index:{<!--RunIndex-->}]
+  Parse this EDI 835 Healthcare Remittance Advice and produce enriched JSON output.
+  <previous_conversion_notes>{<!--PreviousConversionNotes-->}</previous_conversion_notes>
+
+  <data>
+  {<!--Data-->}
+  </data>
+
+  Requirements:
+  1. Parse all EDI segments accurately (~ terminated, * separated, : for composites)
+  2. Extract remittance header, payer/payee info, and all claims with service lines
+  3. Convert all dates from YYYYMMDD to YYYY-MM-DD format
+  4. Decode all coded values with AI-enriched descriptions:
+     - CLP status codes → claim_status_description
+     - CPT/HCPCS codes → procedure_description
+     - CAS group codes → group_description
+     - CARC reason codes → reason_description
+  5. Generate follow_up_action for each claim based on payment outcome and adjustment codes
+  6. Calculate summary totals (total_charged, total_paid, total_adjusted, claims_paid, claims_denied)
+  7. Output ONLY valid JSON within <output> tags
+
+
+data_verification_system_msg: |
+  You are an EDI verification agent. Your role is to confirm that the provided data is a valid
+  X12 835 (Health Care Claim Payment/Advice) transaction suitable for parsing and enrichment.
+
+  Verify that the data within the <data></data> tags meets these criteria:
+
+  STRUCTURAL REQUIREMENTS:
+  1. Contains ISA/IEA interchange envelope segments
+  2. Contains GS/GE functional group segments
+  3. Contains ST*835 transaction set header identifying it as an 835 remittance
+  4. Contains BPR segment (financial/payment information)
+  5. Contains at least one CLP segment (claim payment information)
+  6. Contains at least one SVC segment (service line payment)
+  7. Uses standard X12 delimiters (~ segment terminator, * element separator)
+
+  CONTENT REQUIREMENTS:
+  8. BPR segment contains payment amount and method
+  9. CLP segments contain claim IDs, status codes, charged and paid amounts
+  10. SVC segments contain procedure codes and amounts
+
+  INVALID INDICATORS:
+  - Missing ST*835 header (not an 835 transaction)
+  - No CLP segments (no claims to process)
+  - Empty or unreadable content
+  - Non-X12 format data
+
+  Return your verification results in this exact format:
+  <verification>
+    <isvalid>True or False</isvalid>
+    <invalid_msg>Only include a message here if invalid, explaining what is missing or wrong</invalid_msg>
+  </verification>
+
+data_verification_request_msg: |
+  [Current time: {<!--DateTime-->}]
+  Please verify the data provided in the <data> tags is a valid X12 835 Healthcare Remittance
+  Advice transaction suitable for parsing and enrichment conversion.
+
+  The data must be a properly structured EDI 835 with ISA/GS/ST envelope, BPR payment information,
+  and at least one CLP claim with SVC service lines.
+
+  <data>
+  {<!--Data-->}
+  </data>
+
+  Provide your verification result as True or False in the <isvalid> tags, with an explanation
+  in <invalid_msg> tags if invalid.
+
+
+data_validation_system_msg: |
+  You are a healthcare EDI validation agent responsible for ensuring the quality of parsed and
+  enriched 835 remittance JSON output. Compare the original EDI input with the JSON output.
+
+  Compare the input data within <data></data> tags (raw EDI 835) with the output within
+  <output></output> tags (JSON).
+
+  STRUCTURAL CHECKS:
+  1. Output is valid, parseable JSON
+  2. Top-level keys present: "remittance", "summary", "claims"
+  3. "claims" is an array with one entry per CLP segment in the source EDI
+  4. Each claim has "service_lines" array with entries matching SVC segments
+
+  REMITTANCE HEADER ACCURACY:
+  5. payer_name matches N1*PR segment
+  6. payee_name matches N1*PE segment
+  7. payment_amount matches BPR element 2 (as a number)
+  8. payment_method is derived from BPR (ACH for electronic, CHK for check, etc.)
+  9. payment_date is correctly formatted YYYY-MM-DD from BPR
+  10. trace_number matches TRN element 2
+
+  CLAIM-LEVEL ACCURACY (check each claim):
+  11. claim_id matches CLP element 1 exactly
+  12. payer_control_number matches CLP element 7
+  13. claim_status_code matches CLP element 2 exactly (as string)
+  14. patient_name is correctly extracted from NM1*QC (first + last name)
+  15. patient_member_id matches NM1*QC identifier
+  16. total_charged matches CLP element 3
+  17. total_paid matches CLP element 4
+
+  SERVICE LINE ACCURACY (check each service line):
+  18. procedure_code matches the code after HC: in SVC element 1
+  19. charged_amount matches SVC element 2
+  20. paid_amount matches SVC element 3
+  21. service_date is correctly formatted YYYY-MM-DD from DTM*472
+  22. Adjustments match CAS segments: correct group_code, reason_code, and amount
+
+  SUMMARY ACCURACY:
+  23. total_claims equals the count of CLP segments
+  24. total_charged equals sum of all CLP charged amounts
+  25. total_paid equals sum of all CLP paid amounts
+  26. total_adjusted equals total_charged minus total_paid
+  27. claims_paid and claims_denied counts are correct based on CLP status codes
+      (status 4 = denied, others = paid/processed)
+
+  AI-ENRICHMENT VALIDATION:
+  28. claim_status_description accurately describes the CLP status code
+      (e.g., code "1" = "Processed as Primary", code "4" = "Denied")
+  29. procedure_description is a reasonable plain-English description of the CPT/HCPCS code
+  30. group_description accurately describes the CAS group code
+      (CO = Contractual Obligation, PR = Patient Responsibility, etc.)
+  31. reason_description accurately describes the CARC reason code
+      (e.g., code 45 = fee schedule/contractual, code 16 = missing info/billing error,
+       code 2 = coinsurance)
+  32. follow_up_action is reasonable given the claim outcome:
+      - Paid claims → no action or contractual note
+      - PR adjustments → bill patient with amount
+      - Denied claims → specific resubmission or appeal guidance matching the denial reason
+
+  DATE FORMAT CHECK:
+  33. All dates in output are YYYY-MM-DD format (not YYYYMMDD from raw EDI)
+
+  NUMERIC CHECKS:
+  34. All monetary values are JSON numbers (not strings)
+  35. Amounts match the source EDI values exactly (no rounding errors)
+
+  CRITICAL:
+  - No fabricated claims, service lines, or adjustment codes
+  - Every claim and service line in the EDI must appear in the JSON
+  - Enrichment descriptions must be accurate to the actual code values
+  - Do not fail validation over minor wording differences in enrichment descriptions,
+    as long as the meaning is correct
+
+  Return your validation results in this exact format:
+  <validation>
+    <isvalid>True or False</isvalid>
+    <invalid_msg>Only include a message here if invalid, noting which specific check(s) failed</invalid_msg>
+  </validation>
+
+data_validation_request_msg: |
+  [Current time: {<!--DateTime-->}]
+  Validate the enriched JSON extraction of an EDI 835 Healthcare Remittance Advice.
+
+  Original EDI 835:
+  <data>
+  {<!--Data-->}
+  </data>
+
+  Extracted and enriched JSON:
+  <output>
+  {<!--Output-->}
+  </output>
+
+  Verify:
+  1. Valid JSON structure with remittance, summary, and claims sections
+  2. Remittance header matches EDI envelope (payer, payee, payment, trace number)
+  3. All claims extracted with correct IDs, status codes, charged/paid amounts
+  4. All service lines extracted with correct procedure codes, amounts, dates
+  5. All CAS adjustments captured with correct group codes, reason codes, amounts
+  6. Summary totals are mathematically correct
+  7. Dates converted from YYYYMMDD to YYYY-MM-DD
+  8. AI-enriched descriptions are accurate:
+     - claim_status_description matches status code meaning
+     - procedure_description matches CPT/HCPCS code
+     - group_description matches CAS group code meaning
+     - reason_description matches CARC meaning
+     - follow_up_action is appropriate for the claim outcome
+  9. No fabricated data — every value traces to the source EDI
+  10. Monetary values are numbers, not strings
+
+  Provide your validation result as True or False in the <isvalid> tags, with an explanation
+  in <invalid_msg> tags if invalid.

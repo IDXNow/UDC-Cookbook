@@ -1,0 +1,11 @@
+ReviewID|CustomerName|ProductName|Rating|ReviewDate|Sentiment|SentimentScore|KeyTopics|Urgency
+REV-1001|Maria Santos|Ultra HD Smart Television|5|2025-01-15|Positive|0.95|picture quality;smart features;voice control;easy setup|Low
+REV-1002|James Mitchell|Ergonomic Office Chair|2|2025-01-18|Negative|0.20|damaged product;customer service;replacement delay|High
+REV-1003|Angela Rivera|Cordless Power Drill Set|4|2025-01-20|Positive|0.72|battery life;bit set;case quality;charger heat|Low
+REV-1004|Robert Huang|Smart Refrigerator|1|2025-01-22|Negative|0.05|touchscreen failure;ice maker leak;floor damage;refund request|Critical
+REV-1005|Diane Okafor|Carbon Fiber Mountain Bike|5|2025-01-25|Positive|0.96|lightweight frame;suspension;trail performance|Low
+REV-1006|Kevin Park|Ultra HD Smart Television|3|2025-01-27|Neutral|0.45|picture quality;sluggish interface;cheap remote;sound quality|Low
+REV-1007|Sarah Johansson|Ergonomic Office Chair|5|2025-01-29|Positive|0.94|back pain relief;mesh back;adjustability;posture improvement|Low
+REV-1008|Tom Brennan|Cordless Power Drill Set|3|2025-02-01|Neutral|0.42|battery charging;chuck wobble;broken drill bit|Low
+REV-1009|Lisa Nakamura|Smart Refrigerator|4|2025-02-03|Positive|0.75|French door design;smart features;grocery list;noise level|Low
+REV-1010|Marcus Williams|Carbon Fiber Mountain Bike|2|2025-02-05|Negative|0.22|derailleur adjustment;brake rubbing;quality control|Medium

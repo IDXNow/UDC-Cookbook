@@ -1,0 +1,8 @@
+OrderNumber|CustomerID|CustomerName|OrderDate|ProductSKU|ProductDescription|Quantity|OrderTotal|ShippingStatus
+ORD-2025-10087|CUST3456|Acadia Healthcare|2025-01-15|MED-7823|Vital Signs Monitor Advanced Series|2|8770.25|Shipped
+ORD-2025-10088|CUST2189|Bayside Hospital|2025-01-16|MED-4391|Patient Monitoring System Basic|3|7711.99|Shipped
+ORD-2025-10089|CUST5782|ClearView Medical Group|2025-01-16|SUP-2278|Disposable Gloves Nitrile Size M (case of 1000)|10|1004.89|Processing
+ORD-2025-10090|CUST1945|Desert Medical Center|2025-01-17|LAB-1109|Blood Chemistry Analyzer Professional Series|1|17742.19|Processing
+ORD-2025-10091|CUST3892|Eastshore Health Network|2025-01-18|IMG-5520|Digital X-Ray System Portable|1|31632.30|Pending
+ORD-2025-10092|CUST7812|Frontline Emergency Services|2025-01-19|EMG-3302|Defibrillator Automated External|5|17556.13|Shipped
+ORD-2025-10093|CUST4218|Golden State Health|2025-01-20|MED-9952|Anesthesia Workstation Compact Model|1|45196.18|Pending

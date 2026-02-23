@@ -1,0 +1,277 @@
+# UDC-Cookbook Recipe Catalog
+# Machine-readable index of all recipes for tooling, search, and discovery.
+
+recipes:
+
+  - id: csv-to-pipe
+    name: CSV to Pipe-Delimited — Sales Invoice
+    category: conversion
+    path: conversion/csv-to-pipe
+    input_format: csv
+    output_format: pipe
+    industry: general
+    difficulty: beginner
+    model_tier: any
+    description: Sales invoice data with standardized columns
+    conversion_yaml: conversion/csv-to-pipe/sales_invoice_conv.yaml
+    sample_file: conversion/csv-to-pipe/sales_invoice.csv
+    sample_command: >
+      python udc01.py
+      --conversion "conversion/csv-to-pipe/sales_invoice_conv.yaml"
+      --file "conversion/csv-to-pipe/sales_invoice.csv"
+
+  - id: xml-to-pipe
+    name: XML to Pipe-Delimited — Product Inventory
+    category: conversion
+    path: conversion/xml-to-pipe
+    input_format: xml
+    output_format: pipe
+    industry: general
+    difficulty: beginner
+    model_tier: any
+    description: Product inventory from nested XML hierarchy
+    conversion_yaml: conversion/xml-to-pipe/product_inventory_conv.yaml
+    sample_file: conversion/xml-to-pipe/product_inventory.xml
+    sample_command: >
+      python udc01.py
+      --conversion "conversion/xml-to-pipe/product_inventory_conv.yaml"
+      --file "conversion/xml-to-pipe/product_inventory.xml"
+
+  - id: xlsx-to-pipe
+    name: Excel to Pipe-Delimited — Customer Orders
+    category: conversion
+    path: conversion/xlsx-to-pipe
+    input_format: xlsx
+    output_format: pipe
+    industry: general
+    difficulty: beginner
+    model_tier: any
+    dependencies:
+      - openpyxl
+    description: Customer orders with date/number formatting
+    conversion_yaml: conversion/xlsx-to-pipe/customer_order_conv.yaml
+    sample_file: conversion/xlsx-to-pipe/customer_order.xlsx
+    sample_command: >
+      python udc01.py
+      --conversion "conversion/xlsx-to-pipe/customer_order_conv.yaml"
+      --file "conversion/xlsx-to-pipe/customer_order.xlsx"
+
+  - id: html-to-csv
+    name: HTML to CSV — Job Listings
+    category: conversion
+    path: conversion/html-to-csv
+    input_format: html
+    output_format: csv
+    industry: general
+    difficulty: beginner
+    model_tier: any
+    description: Job listing extraction from web page markup
+    conversion_yaml: conversion/html-to-csv/job_listing_conv.yaml
+    sample_file: conversion/html-to-csv/job_listings.html
+    sample_command: >
+      python udc01.py
+      --conversion "conversion/html-to-csv/job_listing_conv.yaml"
+      --file "conversion/html-to-csv/job_listings.html"
+
+  - id: edi856-to-json
+    name: EDI 856 to JSON — Advance Ship Notice
+    category: conversion
+    path: conversion/edi856-to-json
+    input_format: edi-856
+    output_format: json
+    industry: logistics
+    difficulty: advanced
+    model_tier: recommended
+    description: Advance Ship Notice with HL loop hierarchy parsing
+    conversion_yaml: conversion/edi856-to-json/edi856_to_json_conv.yaml
+    sample_file: conversion/edi856-to-json/edi856_simple.edi
+    sample_command: >
+      python udc01.py
+      --conversion "conversion/edi856-to-json/edi856_to_json_conv.yaml"
+      --file "conversion/edi856-to-json/edi856_simple.edi"
+
+  - id: edi835-to-json
+    name: EDI 835 to JSON — Healthcare Remittance Advice
+    category: conversion
+    path: conversion/edi835-to-json
+    input_format: edi-835
+    output_format: json
+    industry: healthcare
+    difficulty: advanced
+    model_tier: high-end
+    description: Healthcare Remittance Advice with AI-enriched code descriptions
+    enrichment_fields:
+      - claim_status_description
+      - procedure_description
+      - group_description
+      - reason_description
+      - follow_up_action
+    conversion_yaml: conversion/edi835-to-json/edi835_to_json_remittance_conv.yaml
+    sample_file: conversion/edi835-to-json/edi835_remittance.edi
+    sample_command: >
+      python udc01.py
+      --conversion "conversion/edi835-to-json/edi835_to_json_remittance_conv.yaml"
+      --file "conversion/edi835-to-json/edi835_remittance.edi"
+
+  - id: ach-to-json
+    name: ACH/NACHA to JSON — Payroll Payment File
+    category: conversion
+    path: conversion/ach-to-json
+    input_format: ach
+    output_format: json
+    industry: finance
+    difficulty: advanced
+    model_tier: recommended
+    description: Fixed-width NACHA payment file with decoded transaction codes, routing number identification, and enriched field descriptions
+    enrichment_fields:
+      - transaction_description
+      - service_class_description
+      - sec_code_description
+      - originating_bank_name
+      - receiving_bank_name
+      - individual_name_formatted
+      - payment_type
+    conversion_yaml: conversion/ach-to-json/nacha_ach_enrichment_conv.yaml
+    sample_file: conversion/ach-to-json/acme_payroll.ach
+    sample_command: >
+      python udc01.py
+      --conversion "conversion/ach-to-json/nacha_ach_enrichment_conv.yaml"
+      --file "conversion/ach-to-json/acme_payroll.ach"
+
+  - id: json-to-csv
+    name: JSON to CSV — CRM Contacts
+    category: conversion
+    path: conversion/json-to-csv
+    input_format: json
+    output_format: csv
+    industry: general
+    difficulty: beginner
+    model_tier: any
+    description: CRM contacts with nested address and phone array flattening
+    conversion_yaml: conversion/json-to-csv/crm_contacts_conv.yaml
+    sample_file: conversion/json-to-csv/crm_contacts.json
+    sample_command: >
+      python udc01.py
+      --conversion "conversion/json-to-csv/crm_contacts_conv.yaml"
+      --file "conversion/json-to-csv/crm_contacts.json"
+
+  - id: html-to-json
+    name: HTML to JSON — Real Estate Listing
+    category: extraction
+    path: extraction/html-to-json
+    input_format: html
+    output_format: json
+    industry: real-estate
+    difficulty: intermediate
+    model_tier: recommended
+    description: Real estate listing with nested property/agent/media structure
+    conversion_yaml: extraction/html-to-json/real_estate_listing_conv.yaml
+    sample_file: extraction/html-to-json/real_estate_listing.html
+    sample_command: >
+      python udc01.py
+      --conversion "extraction/html-to-json/real_estate_listing_conv.yaml"
+      --file "extraction/html-to-json/real_estate_listing.html"
+
+  - id: pdf-to-json
+    name: PDF to JSON — Gift Order Document
+    category: extraction
+    path: extraction/pdf-to-json
+    input_format: pdf
+    output_format: json
+    industry: general
+    difficulty: intermediate
+    model_tier: recommended
+    dependencies:
+      - pdfplumber
+    description: Order document with line items, totals, and shipping
+    conversion_yaml: extraction/pdf-to-json/gift_order_pdf_conv.yaml
+    sample_file: extraction/pdf-to-json/gift_order_input.pdf
+    sample_command: >
+      python udc01.py
+      --conversion "extraction/pdf-to-json/gift_order_pdf_conv.yaml"
+      --file "extraction/pdf-to-json/gift_order_input.pdf"
+
+  - id: sentiment-analysis
+    name: Sentiment Analysis — Customer Reviews
+    category: enrichment
+    path: enrichment/sentiment-analysis
+    input_format: csv
+    output_format: pipe
+    industry: general
+    difficulty: intermediate
+    model_tier: recommended
+    description: Customer reviews enriched with sentiment, score, topics, and urgency
+    enrichment_fields:
+      - Sentiment
+      - SentimentScore
+      - KeyTopics
+      - Urgency
+    conversion_yaml: enrichment/sentiment-analysis/product_review_sentiment_conv.yaml
+    sample_file: enrichment/sentiment-analysis/product_reviews_input.csv
+    sample_command: >
+      python udc01.py
+      --conversion "enrichment/sentiment-analysis/product_review_sentiment_conv.yaml"
+      --file "enrichment/sentiment-analysis/product_reviews_input.csv"
+
+  - id: ticket-categorization-routing
+    name: Ticket Categorization — Support Tickets
+    category: enrichment
+    path: enrichment/ticket-categorization
+    input_format: csv
+    output_format: pipe
+    industry: general
+    difficulty: intermediate
+    model_tier: recommended
+    description: Support tickets enriched with category, priority, routing, and emotion
+    enrichment_fields:
+      - Category
+      - Subcategory
+      - Priority
+      - DepartmentRouting
+      - CustomerEmotion
+    conversion_yaml: enrichment/ticket-categorization/support_ticket_triage_conv.yaml
+    sample_file: enrichment/ticket-categorization/support_tickets_input.csv
+    sample_command: >
+      python udc01.py
+      --conversion "enrichment/ticket-categorization/support_ticket_triage_conv.yaml"
+      --file "enrichment/ticket-categorization/support_tickets_input.csv"
+
+  - id: transaction-classification
+    name: Transaction Classification — Business Transactions
+    category: enrichment
+    path: enrichment/transaction-classification
+    input_format: csv
+    output_format: pipe
+    industry: finance
+    difficulty: intermediate
+    model_tier: recommended
+    description: Bank transactions enriched with category, tax deductibility, vendor, and GL code
+    enrichment_fields:
+      - Category
+      - Subcategory
+      - TaxDeductible
+      - VendorName
+    conversion_yaml: enrichment/transaction-classification/business_transaction_categorize_conv.yaml
+    sample_file: enrichment/transaction-classification/business_transactions_input.csv
+    sample_command: >
+      python udc01.py
+      --conversion "enrichment/transaction-classification/business_transaction_categorize_conv.yaml"
+      --file "enrichment/transaction-classification/business_transactions_input.csv"
+
+  - id: sql-view-customer-join
+    name: SQL View Transform — Add Customer Name Join
+    category: code-transform
+    path: code-transform/sql-view-customer-join
+    input_format: sql
+    output_format: sql
+    industry: general
+    difficulty: beginner
+    model_tier: any
+    description: Add customer_name to SQL views by inserting c.customer_name and INNER JOIN to d_customer
+    conversion_yaml: code-transform/sql-view-customer-join/add_customer_join_conv.yaml
+    sample_file: code-transform/sql-view-customer-join/v_customer_orders.sql
+    sample_command: >
+      python udc01.py
+      --conversion "code-transform/sql-view-customer-join/add_customer_join_conv.yaml"
+      --folder "code-transform/sql-view-customer-join"
+      --pattern "v_*.sql"

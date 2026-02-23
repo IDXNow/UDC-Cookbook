@@ -1,0 +1,119 @@
+{
+  "interchange": {
+    "sender_id": "SENDER123",
+    "receiver_id": "RECEIVER456",
+    "date": "20240115",
+    "time": "1030",
+    "control_number": "000000001"
+  },
+  "functional_group": {
+    "sender_code": "SENDER123",
+    "receiver_code": "RECEIVER456",
+    "date": "20240115",
+    "time": "1030",
+    "group_control": "1"
+  },
+  "transaction": {
+    "control_number": "0001",
+    "purpose": "00"
+  },
+  "shipment": {
+    "asn_number": "SH123456",
+    "asn_date": "20240115",
+    "asn_time": "1030",
+    "shipped_date": "20240115",
+    "estimated_delivery": null,
+    "carrier": {
+      "scac": "UPSN",
+      "name": null,
+      "transport_method": "M",
+      "service_level": "2",
+      "tracking_number": "1Z999AA10123456784",
+      "bol_number": "BOL789012",
+      "trailer_number": null
+    },
+    "packaging": {
+      "type": "CTN",
+      "count": 5,
+      "weight": 150,
+      "weight_uom": "LB"
+    },
+    "ship_from": {
+      "name": "ACME WAREHOUSE",
+      "id_type": "92",
+      "id": "WH001",
+      "address": {
+        "line1": "100 INDUSTRIAL PKWY",
+        "line2": null,
+        "city": "ATLANTA",
+        "state": "GA",
+        "postal": "30301",
+        "country": "US"
+      },
+      "contact": {
+        "name": null,
+        "phone": null,
+        "email": null
+      }
+    },
+    "ship_to": {
+      "name": "RETAIL STORE 42",
+      "id_type": "92",
+      "id": "ST042",
+      "address": {
+        "line1": "500 MAIN STREET",
+        "line2": null,
+        "city": "NASHVILLE",
+        "state": "TN",
+        "postal": "37201",
+        "country": "US"
+      },
+      "contact": {
+        "name": null,
+        "phone": null,
+        "email": null
+      }
+    },
+    "buyer": null
+  },
+  "orders": [
+    {
+      "po_number": "PO-2024-00123",
+      "po_date": null,
+      "invoice_number": "INV-2024-00567",
+      "vendor_number": null,
+      "tares": [],
+      "items": [
+        {
+          "line_number": 1,
+          "identifiers": {
+            "upc": "012345678901",
+            "vendor_part": "SKU-WIDGET-001",
+            "buyer_sku": null,
+            "manufacturer": null
+          },
+          "description": "DELUXE WIDGET BLUE 12PK",
+          "quantity_shipped": 100,
+          "quantity_ordered": null,
+          "uom": "EA",
+          "lot_number": null,
+          "serial_number": null,
+          "expiration_date": null,
+          "backorder_qty": null,
+          "backorder_date": null,
+          "pricing": {
+            "type": null,
+            "unit_price": null
+          }
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "hl_total_count": 3,
+    "hl_item_count": 1,
+    "quantity_hash": null,
+    "amount": null,
+    "segment_count": 23
+  }
+}

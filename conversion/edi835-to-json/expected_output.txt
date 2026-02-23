@@ -1,0 +1,135 @@
+{
+  "remittance": {
+    "payer_name": "GREEN CROSS GREEN SHIELD OF NC",
+    "payer_id": "BCBSNC001",
+    "payer_address": "DURHAM, NC 27702",
+    "payee_name": "ACME HEALTH SERVICES",
+    "payee_npi": "1234567890",
+    "payee_tin": "562314789",
+    "payee_address": "CHARLOTTE, NC 28202",
+    "payment_amount": 1075.00,
+    "payment_method": "ACH",
+    "payment_date": "2025-01-15",
+    "trace_number": "BCBS20250115001",
+    "production_date": "2025-01-15"
+  },
+  "summary": {
+    "total_claims": 3,
+    "total_charged": 1800.00,
+    "total_paid": 1075.00,
+    "total_adjusted": 725.00,
+    "claims_paid": 2,
+    "claims_denied": 1
+  },
+  "claims": [
+    {
+      "claim_id": "PAT1001-20250103",
+      "payer_control_number": "BCBS2025-00412",
+      "claim_status_code": "1",
+      "claim_status_description": "Processed as Primary",
+      "patient_name": "MARY JOHNSON",
+      "patient_member_id": "XYZ123456",
+      "total_charged": 250.00,
+      "total_paid": 200.00,
+      "allowed_amount": 200.00,
+      "service_lines": [
+        {
+          "procedure_code": "99213",
+          "procedure_description": "Office or other outpatient visit, established patient, low to moderate complexity",
+          "charged_amount": 250.00,
+          "paid_amount": 200.00,
+          "units": 1,
+          "service_date": "2025-01-03",
+          "adjustments": [
+            {
+              "group_code": "CO",
+              "group_description": "Contractual Obligation – Provider write-off per contract, not billable to patient",
+              "reason_code": "45",
+              "reason_description": "Charge exceeds fee schedule/maximum allowable or contracted/legislated fee arrangement",
+              "amount": 50.00
+            }
+          ]
+        }
+      ],
+      "follow_up_action": "No action required – claim paid per contract terms with contractual adjustment applied"
+    },
+    {
+      "claim_id": "PAT1002-20250105",
+      "payer_control_number": "BCBS2025-00413",
+      "claim_status_code": "1",
+      "claim_status_description": "Processed as Primary",
+      "patient_name": "JAMES WILLIAMS",
+      "patient_member_id": "XYZ789012",
+      "total_charged": 1100.00,
+      "total_paid": 875.00,
+      "allowed_amount": 875.00,
+      "service_lines": [
+        {
+          "procedure_code": "99215",
+          "procedure_description": "Office or other outpatient visit, established patient, high complexity",
+          "charged_amount": 350.00,
+          "paid_amount": 350.00,
+          "units": 1,
+          "service_date": "2025-01-05",
+          "adjustments": []
+        },
+        {
+          "procedure_code": "71046",
+          "procedure_description": "Chest X-ray, 2 views",
+          "charged_amount": 750.00,
+          "paid_amount": 525.00,
+          "units": 1,
+          "service_date": "2025-01-05",
+          "adjustments": [
+            {
+              "group_code": "CO",
+              "group_description": "Contractual Obligation – Provider write-off per contract, not billable to patient",
+              "reason_code": "45",
+              "reason_description": "Charge exceeds fee schedule/maximum allowable or contracted/legislated fee arrangement",
+              "amount": 125.00
+            },
+            {
+              "group_code": "PR",
+              "group_description": "Patient Responsibility – Amount owed by the patient (copay, coinsurance, deductible)",
+              "reason_code": "2",
+              "reason_description": "Coinsurance amount",
+              "amount": 100.00
+            }
+          ]
+        }
+      ],
+      "follow_up_action": "Bill patient for $100.00 – coinsurance amount (patient responsibility)"
+    },
+    {
+      "claim_id": "PAT1003-20250108",
+      "payer_control_number": "BCBS2025-00414",
+      "claim_status_code": "4",
+      "claim_status_description": "Denied",
+      "patient_name": "ROBERT CHEN",
+      "patient_member_id": "XYZ345678",
+      "total_charged": 450.00,
+      "total_paid": 0.00,
+      "allowed_amount": 0.00,
+      "service_lines": [
+        {
+          "procedure_code": "99214",
+          "procedure_description": "Office or other outpatient visit, established patient, moderate complexity",
+          "charged_amount": 450.00,
+          "paid_amount": 0.00,
+          "units": 1,
+          "service_date": "2025-01-08",
+          "adjustments": [
+            {
+              "group_code": "CO",
+              "group_description": "Contractual Obligation – Provider write-off per contract, not billable to patient",
+              "reason_code": "16",
+              "reason_description": "Claim/service lacks information or has submission/billing error",
+              "amount": 450.00
+            }
+          ]
+        }
+      ],
+      "follow_up_action": "Review and resubmit – correct missing or invalid information identified by the payer"
+    }
+  ]
+}

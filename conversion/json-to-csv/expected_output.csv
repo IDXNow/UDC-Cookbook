@@ -1,0 +1,6 @@
+ContactID,FirstName,LastName,Email,Company,Title,City,State,Phone,Status,CreatedDate
+CON-1001,Sarah,Mitchell,smitchell@acmecorp.com,Acme Corporation,VP of Operations,New York,NY,212-555-0142,Customer,2024-03-12
+CON-1002,James,Torres,jtorres@techsolutions.com,TechSolutions Inc,Director of IT,San Jose,CA,408-555-0237,Lead,2024-06-20
+CON-1003,Linda,Zhao,lzhao@globalretail.com,Global Retail Partners,Procurement Manager,Chicago,IL,312-555-0089,Customer,2023-11-05
+CON-1004,Kevin,O'Brien,kobrien@northernhealth.org,Northern Healthcare,CFO,Boston,MA,617-555-0156,Prospect,2025-01-03
+CON-1005,Maria,Fernandez,mfernandez@pacificconstruct.com,Pacific Construction,Project Director,Seattle,WA,206-555-0274,Customer,2024-08-29

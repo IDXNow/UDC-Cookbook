@@ -1,0 +1,110 @@
+[
+  {
+    "contact_id": "CON-1001",
+    "first_name": "Sarah",
+    "last_name": "Mitchell",
+    "email": "smitchell@acmecorp.com",
+    "company": "Acme Corporation",
+    "title": "VP of Operations",
+    "status": "Customer",
+    "created_date": "2024-03-12",
+    "address": {
+      "street": "123 Business Ave, Suite 400",
+      "city": "New York",
+      "state": "NY",
+      "zip": "10001"
+    },
+    "phones": [
+      { "type": "work", "number": "212-555-0142" },
+      { "type": "mobile", "number": "917-555-0198" }
+    ],
+    "tags": ["enterprise", "priority"],
+    "last_contacted": "2025-01-08"
+  },
+  {
+    "contact_id": "CON-1002",
+    "first_name": "James",
+    "last_name": "Torres",
+    "email": "jtorres@techsolutions.com",
+    "company": "TechSolutions Inc",
+    "title": "Director of IT",
+    "status": "Lead",
+    "created_date": "2024-06-20",
+    "address": {
+      "street": "5500 Technology Pkwy, Building D",
+      "city": "San Jose",
+      "state": "CA",
+      "zip": "95110"
+    },
+    "phones": [
+      { "type": "work", "number": "408-555-0237" },
+      { "type": "mobile", "number": "408-555-0311" }
+    ],
+    "tags": ["smb", "inbound"],
+    "last_contacted": "2025-01-14"
+  },
+  {
+    "contact_id": "CON-1003",
+    "first_name": "Linda",
+    "last_name": "Zhao",
+    "email": "lzhao@globalretail.com",
+    "company": "Global Retail Partners",
+    "title": "Procurement Manager",
+    "status": "Customer",
+    "created_date": "2023-11-05",
+    "address": {
+      "street": "8901 Market Street, Floor 3",
+      "city": "Chicago",
+      "state": "IL",
+      "zip": "60607"
+    },
+    "phones": [
+      { "type": "work", "number": "312-555-0089" }
+    ],
+    "tags": ["retail", "renewal-due"],
+    "last_contacted": "2024-12-19"
+  },
+  {
+    "contact_id": "CON-1004",
+    "first_name": "Kevin",
+    "last_name": "O'Brien",
+    "email": "kobrien@northernhealth.org",
+    "company": "Northern Healthcare",
+    "title": "CFO",
+    "status": "Prospect",
+    "created_date": "2025-01-03",
+    "address": {
+      "street": "422 Medical Center Drive",
+      "city": "Boston",
+      "state": "MA",
+      "zip": "02115"
+    },
+    "phones": [
+      { "type": "work", "number": "617-555-0156" },
+      { "type": "direct", "number": "617-555-0167" }
+    ],
+    "tags": ["healthcare", "enterprise"],
+    "last_contacted": "2025-01-17"
+  },
+  {
+    "contact_id": "CON-1005",
+    "first_name": "Maria",
+    "last_name": "Fernandez",
+    "email": "mfernandez@pacificconstruct.com",
+    "company": "Pacific Construction",
+    "title": "Project Director",
+    "status": "Customer",
+    "created_date": "2024-08-29",
+    "address": {
+      "street": "3320 Builder's Plaza, Suite 210",
+      "city": "Seattle",
+      "state": "WA",
+      "zip": "98101"
+    },
+    "phones": [
+      { "type": "mobile", "number": "206-555-0274" }
+    ],
+    "tags": ["construction", "west-coast"],
+    "last_contacted": "2025-01-22"
+  }
+]

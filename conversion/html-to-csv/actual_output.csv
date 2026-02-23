@@ -1,0 +1,2 @@
+JobID,Title,Department,Location,WorkArrangement,CompanyName,PostedDate,RequiredExperience,EducationLevel,Skills
+NX-ENG-2025-042,Senior Data Engineer,Engineering,"San Francisco, CA",Hybrid,NexusAI Technologies,January 28, 2025,5+ years,Bachelor's degree in Computer Science, Engineering, or related field,Python;SQL;AWS;Spark;Airflow;ETL;Data Warehousing;Kafka;Docker;Git;Terraform;CI/CD
