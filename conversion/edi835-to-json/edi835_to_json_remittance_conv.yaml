@@ -16,7 +16,7 @@ data_conversion_system_msg: |
   Payment/Advice) transaction and produce structured, enriched JSON output.
 
   The input data will be provided within <data></data> tags, and your output must be enclosed
-  in <output></output> tags.
+  in <o></o> tags.
 
   EDI 835 STRUCTURE REFERENCE:
   The 835 is a remittance advice sent by a payer (insurance company) to a payee (healthcare provider)
@@ -189,7 +189,7 @@ data_conversion_system_msg: |
   - total_adjusted in summary = total_charged - total_paid (across all claims)
 
   CRITICAL:
-  - Output ONLY valid JSON inside <output> tags
+  - Output ONLY valid JSON inside <o> tags
   - No text or commentary outside the tags
   - No markdown code blocks inside the tags
   - Parse every segment accurately — do not skip claims or service lines
@@ -216,7 +216,7 @@ data_conversion_request_msg: |
      - CARC reason codes → reason_description
   5. Generate follow_up_action for each claim based on payment outcome and adjustment codes
   6. Calculate summary totals (total_charged, total_paid, total_adjusted, claims_paid, claims_denied)
-  7. Output ONLY valid JSON within <output> tags
+  7. Output ONLY valid JSON within <o> tags
 
 
 data_verification_system_msg: |
@@ -272,7 +272,7 @@ data_validation_system_msg: |
   enriched 835 remittance JSON output. Compare the original EDI input with the JSON output.
 
   Compare the input data within <data></data> tags (raw EDI 835) with the output within
-  <output></output> tags (JSON).
+  <o></o> tags (JSON).
 
   STRUCTURAL CHECKS:
   1. Output is valid, parseable JSON
@@ -356,9 +356,9 @@ data_validation_request_msg: |
   </data>
 
   Extracted and enriched JSON:
-  <output>
+  <o>
   {<!--Output-->}
-  </output>
+  </o>
 
   Verify:
   1. Valid JSON structure with remittance, summary, and claims sections

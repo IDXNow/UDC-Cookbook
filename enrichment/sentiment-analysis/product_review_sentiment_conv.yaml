@@ -10,7 +10,7 @@ data_conversion_system_msg: |
   AI-derived analytical columns.
 
   The input data will be provided within <data></data> tags, and your output must be enclosed
-  in <output></output> tags.
+  in <o></o> tags.
 
   INPUT COLUMNS (CSV):
   ReviewID, CustomerName, ProductName, Rating, ReviewDate, ReviewText
@@ -56,12 +56,12 @@ data_conversion_system_msg: |
   - Preserve every data row from the input (do not drop or reorder rows)
   - Preserve original values exactly for pass-through columns (no trimming, no reformatting)
   - Do NOT include ReviewText in the output
-  - Do NOT include any text outside the <output> tags
+  - Do NOT include any text outside the <o> tags
 
-  <output>
+  <o>
   ReviewID|CustomerName|ProductName|Rating|ReviewDate|Sentiment|SentimentScore|KeyTopics|Urgency
   ...data rows...
-  </output>
+  </o>
 
 data_conversion_request_msg: |
   [Current time: {<!--DateTime-->}] [Try Index:{<!--RunIndex-->}]
@@ -79,7 +79,7 @@ data_conversion_request_msg: |
   4. Analyze ReviewText to derive Sentiment, SentimentScore, KeyTopics, and Urgency
   5. DO NOT include ReviewText in the output
   6. Include all data rows - do not skip any reviews
-  7. Output ONLY the pipe-delimited data within <output> tags
+  7. Output ONLY the pipe-delimited data within <o> tags
   8. Include the header row with exact column names
 
 
@@ -131,7 +131,7 @@ data_validation_system_msg: |
   You are a data validation agent responsible for ensuring the quality of converted product review data
   with sentiment analysis. Compare the original input with the converted output and verify correctness.
 
-  Compare the input data within <data></data> tags with the output data within <output></output> tags.
+  Compare the input data within <data></data> tags with the output data within <o></o> tags.
 
   STRUCTURE CHECKS:
   1. Output uses pipe (|) delimiter consistently
@@ -185,9 +185,9 @@ data_validation_request_msg: |
   </data>
 
   Converted output:
-  <output>
+  <o>
   {<!--Output-->}
-  </output>
+  </o>
 
   Verify:
   1. Correct pipe-delimited structure with exactly 9 columns

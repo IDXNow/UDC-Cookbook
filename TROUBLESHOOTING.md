@@ -17,7 +17,7 @@ pip install pdfplumber
 
 ### `ModuleNotFoundError: No module named 'openpyxl'`
 
-**Cause:** The `xlsx-to-pipe` recipe requires `openpyxl` for reading Excel files.
+**Cause:** The `xlsx-to-pipe` recipe requires `openpyxl` for reading Excel input files.  Also required when saving output as `.xlsx` or `.xls` (Excel output support).
 
 **Fix:**
 ```bash
@@ -86,6 +86,21 @@ echo $env:OPENAI_API_KEY
 - Wait a moment and retry — UDC01 has built-in retry with exponential backoff (`api_retry_attempts` and `api_retry_backoff` in config)
 - Check your provider's rate limit tier and consider upgrading if you're doing batch work
 
+### Agent is using the wrong provider or model
+
+**Cause:** UDC01 uses a named provider profiles system.  The `provider` value on an agent must exactly match a key in the `providers` section of your config.  A mismatch silently falls back to the global `default_provider`.
+
+**Fix:** Confirm your config has a matching entry:
+```json
+"providers": {
+  "anthropic": { "base_url": "...", "request_format": "anthropic", ... }
+},
+"agents": {
+  "data_conversion": { "provider": "anthropic", ... }
+}
+```
+Provider keys are case-sensitive (`"anthropic"` ≠ `"Anthropic"`).
+
 ---
 
 ## Connection Issues
@@ -144,6 +159,33 @@ The default is 600 seconds (10 minutes). For very large files or complex recipes
    "max_retries": 5
    ```
 4. For EDI recipes: high-end cloud models (GPT-4o, Claude Sonnet/Opus, Gemini Pro) are strongly recommended
+
+### `thinking_budget` has no effect / model returns an error with thinking enabled
+
+**Cause:** `thinking_budget` is supported by Anthropic and Google providers only.  Using it with an OpenAI or local model will cause an error or be silently ignored.  Anthropic also forces `temperature: 1` internally when `thinking_budget` is set — any other temperature value in the config is overridden.
+
+**Fix:** Only set `thinking_budget` on agents using an Anthropic or Google provider:
+```json
+{ "name": "Ted Sagan", "provider": "anthropic", "thinking_budget": 8000, "max_tokens": 16000 }
+```
+
+### `reasoning_effort` has no effect
+
+**Cause:** `reasoning_effort` (`"low"`, `"medium"`, `"high"`) is for OpenAI o-series models only.  It is mutually exclusive with `temperature` — setting both on the same agent causes an error.
+
+**Fix:** Use `reasoning_effort` only on OpenAI o-series agents and remove the `temperature` key:
+```json
+{ "name": "Ted Sagan", "provider": "openai", "model": "o3-mini", "reasoning_effort": "high" }
+```
+
+### Excel output file is saved as `.txt` with a warning
+
+**Cause:** UDC01 tried to save as `.xlsx` but couldn't parse the converted output as tabular data (pipe-delimited, CSV, or JSON array).
+
+**Fix:**
+- Check that the conversion recipe produces tabular output (rows and columns), not freeform text
+- Verify the model is generating valid delimited output inside the `<o>` tags
+- For non-tabular outputs, use a text-based `file_extension` (`txt`, `json`) instead of `xlsx`
 
 ---
 

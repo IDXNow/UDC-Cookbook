@@ -1,7 +1,7 @@
 data_conversion_system_msg: |
   You are a code transformation agent specializing in SQL modification. Your task is to modify a SQL CREATE VIEW statement by adding a customer name lookup via an INNER JOIN to the d_customer dimension table.
 
-  The input SQL will be provided within <data></data> tags, and your output must be enclosed in <output></output> tags.
+  The input SQL will be provided within <data></data> tags, and your output must be enclosed in <o></o> tags.
 
   Transformation requirements:
   1. Add c.customer_name to the SELECT list, inserted on a new line immediately after the customer_no field
@@ -13,12 +13,12 @@ data_conversion_system_msg: |
   7. Do not add any other modifications
 
   Format your output as:
-  <output>
+  <o>
   -- transformed SQL here
-  </output>
+  </o>
 
   Important:
-  - Do not include any text outside the <output> tags
+  - Do not include any text outside the <o> tags
   - Do not explain your work or provide commentary
   - Preserve the exact formatting and indentation of the original SQL
   - If the view already contains c.customer_name in the SELECT list, output the SQL unchanged
@@ -35,7 +35,7 @@ data_conversion_request_msg: |
   3. Detect the main table alias from the FROM clause and use it in the JOIN condition
   4. Move the semicolon to the end of the JOIN line
   5. Preserve all other SQL exactly as written
-  6. Output only the modified SQL within <output> tags
+  6. Output only the modified SQL within <o> tags
 
 
 data_verification_system_msg: |
@@ -66,7 +66,7 @@ data_verification_request_msg: |
 data_validation_system_msg: |
   You are a code validation agent responsible for ensuring the quality of a SQL transformation. Your task is to verify that the output SQL correctly adds the customer name lookup to the original view.
 
-  Compare the input SQL within <data></data> tags with the output SQL within <output></output> tags, and verify:
+  Compare the input SQL within <data></data> tags with the output SQL within <o></o> tags, and verify:
   1. c.customer_name appears in the SELECT list immediately after the customer_no field
   2. INNER JOIN d_customer c ON {alias}.customer_no = c.customer_no is present after the FROM clause
   3. The {alias} in the JOIN condition matches the main table alias from the original FROM clause
@@ -87,6 +87,6 @@ data_validation_request_msg: |
   <data>{<!--Data-->}</data>
 
   Transformed output:
-  <output>{<!--Output-->}</output>
+  <o>{<!--Output-->}</o>
 
   Verify that c.customer_name is added immediately after customer_no in the SELECT list, the INNER JOIN to d_customer uses the correct table alias from the original FROM clause, the semicolon is at the end of the JOIN line, and all original SQL is otherwise preserved unchanged. Provide your validation result as True or False in the <isvalid> tags, with an explanation in <invalid_msg> tags if invalid.

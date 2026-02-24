@@ -21,7 +21,7 @@ data_conversion_system_msg: |
   payment file and produce structured, enriched JSON output.
 
   The input data will be provided within <data></data> tags, and your output must be enclosed
-  in <output></output> tags.
+  in <o></o> tags.
 
   NACHA FILE FORMAT REFERENCE:
   Every record in a NACHA file is EXACTLY 94 characters. Fields are identified by their
@@ -245,7 +245,7 @@ data_conversion_system_msg: |
   - Reconstruct full 9-digit routing from 8-digit DFI ID + check digit in Type 6 records
 
   CRITICAL:
-  - Output ONLY valid JSON inside <output> tags
+  - Output ONLY valid JSON inside <o> tags
   - No text or commentary outside the tags
   - No markdown code blocks inside the tags
   - Parse EVERY record by character position - do not guess field boundaries
@@ -276,7 +276,7 @@ data_conversion_request_msg: |
   7. Reconstruct full 9-digit routing numbers from DFI ID + check digit
   8. Calculate file_summary with payment type and method breakdown
   9. Ignore any padding records (all 9s)
-  10. CRITICAL: Wrap your ENTIRE response in <output></output> tags - no text outside the tags
+  10. CRITICAL: Wrap your ENTIRE response in <o></o> tags - no text outside the tags
 
 
 data_verification_system_msg: |
@@ -333,7 +333,7 @@ data_validation_system_msg: |
   enriched NACHA/ACH JSON output. Compare the original fixed-width file with the JSON output.
 
   Compare the input data within <data></data> tags (raw NACHA file) with the output within
-  <output></output> tags (JSON).
+  <o></o> tags (JSON).
 
   STRUCTURAL CHECKS:
   1. Output is valid, parseable JSON
@@ -427,9 +427,9 @@ data_validation_request_msg: |
   </data>
 
   Extracted and enriched JSON:
-  <output>
+  <o>
   {<!--Output-->}
-  </output>
+  </o>
 
   Verify:
   1. Valid JSON structure with file_header, batches, file_control, and file_summary sections

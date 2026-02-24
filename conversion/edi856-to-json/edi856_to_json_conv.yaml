@@ -246,15 +246,15 @@ data_conversion_system_msg: |
   9. Preserve all party information (ship_from, ship_to, buyer)
 
   OUTPUT FORMAT
-  Wrap the JSON output in <output> tags:
-  <output>
+  Wrap the JSON output in <o> tags:
+  <o>
   {
     ...valid JSON...
   }
-  </output>
+  </o>
 
   CRITICAL RULES
-  - Output ONLY valid JSON inside <output> tags
+  - Output ONLY valid JSON inside <o> tags
   - No commentary or explanation outside the tags
   - No markdown code blocks inside the tags
   - Ensure all JSON keys use snake_case
@@ -281,7 +281,7 @@ data_conversion_request_msg: |
      - hl_item_count = Only HL segments with "I" level (this matches CTT01)
      - quantity_hash = Sum of all SN102 quantities (this matches CTT02)
   7. Use null for missing optional fields
-  8. Output valid JSON wrapped in <output> tags
+  8. Output valid JSON wrapped in <o> tags
 
 
 data_verification_system_msg: |
@@ -453,9 +453,9 @@ data_validation_request_msg: |
   </data>
 
   Converted JSON Output:
-  <output>
+  <o>
   {<!--Output-->}
-  </output>
+  </o>
 
   Perform these validations:
   1. Verify valid JSON structure with all required sections

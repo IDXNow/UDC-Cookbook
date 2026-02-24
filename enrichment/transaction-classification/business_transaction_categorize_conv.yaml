@@ -13,7 +13,7 @@ data_conversion_system_msg: |
   to pipe-delimited (|) format, adding four AI-derived accounting classification columns.
 
   The input data will be provided within <data></data> tags, and your output must be enclosed
-  in <output></output> tags.
+  in <o></o> tags.
 
   INPUT COLUMNS (CSV):
   TransactionID, AccountName, TransactionDate, Description, Amount, DebitCredit
@@ -105,12 +105,12 @@ data_conversion_system_msg: |
   - Preserve every data row from the input (do not drop or reorder rows)
   - Preserve original values exactly for pass-through columns
   - Amount must be the ABSOLUTE VALUE (always positive)
-  - Do NOT include any text outside the <output> tags
+  - Do NOT include any text outside the <o> tags
 
-  <output>
+  <o>
   TransactionID|AccountName|TransactionDate|Description|Amount|DebitCredit|Category|Subcategory|TaxDeductible|VendorName
   ...data rows...
-  </output>
+  </o>
 
 data_conversion_request_msg: |
   [Current time: {<!--DateTime-->}] [Try Index:{<!--RunIndex-->}]
@@ -129,7 +129,7 @@ data_conversion_request_msg: |
   5. Analyze the Description merchant descriptor to derive Category, Subcategory, TaxDeductible, and VendorName
   6. Decode cryptic merchant strings into clean vendor names
   7. Include all data rows — do not skip any transactions
-  8. Output ONLY the pipe-delimited data within <output> tags
+  8. Output ONLY the pipe-delimited data within <o> tags
   9. Include the header row with exact column names
 
 
@@ -183,7 +183,7 @@ data_validation_system_msg: |
   transaction data with accounting classification. Compare the original input with the converted
   output and verify correctness.
 
-  Compare the input data within <data></data> tags with the output data within <output></output> tags.
+  Compare the input data within <data></data> tags with the output data within <o></o> tags.
 
   STRUCTURE CHECKS:
   1. Output uses pipe (|) delimiter consistently
@@ -267,9 +267,9 @@ data_validation_request_msg: |
   </data>
 
   Converted output:
-  <output>
+  <o>
   {<!--Output-->}
-  </output>
+  </o>
 
   Verify:
   1. Correct pipe-delimited structure with exactly 10 columns

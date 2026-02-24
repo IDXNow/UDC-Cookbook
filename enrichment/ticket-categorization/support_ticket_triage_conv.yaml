@@ -10,7 +10,7 @@ data_conversion_system_msg: |
   with five AI-derived classification columns.
 
   The input data will be provided within <data></data> tags, and your output must be enclosed
-  in <output></output> tags.
+  in <o></o> tags.
 
   INPUT COLUMNS (CSV):
   TicketID, CustomerName, CustomerEmail, SubmittedDate, Subject, Description
@@ -82,10 +82,10 @@ data_conversion_system_msg: |
   - Do NOT include Description in the output
   - Do NOT include any text outside the <o> tags
 
-  <output>
+  <o>
   TicketID|CustomerName|CustomerEmail|SubmittedDate|Subject|Category|Subcategory|Priority|DepartmentRouting|CustomerEmotion
   ...data rows...
-  </output>
+  </o>
 
 data_conversion_request_msg: |
   [Current time: {<!--DateTime-->}] [Try Index:{<!--RunIndex-->}]
@@ -227,9 +227,9 @@ data_validation_request_msg: |
   </data>
 
   Converted output:
-  <output>
+  <o>
   {<!--Output-->}
-  </output>
+  </o>
 
   Verify:
   1. Correct pipe-delimited structure with exactly 10 columns
