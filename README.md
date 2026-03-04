@@ -2,15 +2,15 @@
 
 # UDC-Cookbook
 
-This is a collection of ready-to-run [UDC01](https://github.com/IDXNow/UDC01) recipes organized by use case.  Each recipe is self-contained with a YAML configuration, sample input, expected output, and documentation - clone the repo, pick a folder, and run it.
+This repository as a practical cookbook for [UDC01](https://github.com/IDXNow/UDC01): copy a recipe, point it at your file, and get production-ready output fast.  Each recipe is self-contained with YAML configuration, sample input, expected output, and focused documentation so that anyone can run and extend patterns without setup fatigue.
 
-These recipes are starting points, not constraints.  Use them to learn patterns quickly, then customize mappings, prompts, schemas, and validation rules to match your own data transformation and conversion requirements.
+These recipes are starting points, not constraints.  You'll see clear baseline patterns so you can customize mappings, prompts, schemas, and validation rules without reverse-engineering the framework first.
 
-**What is UDC01?** The Universal Data Converter is an AI-driven data transformation framework that uses LLM-powered verification, conversion, and validation with a 2/3 majority voting mechanism for high-accuracy results.  See the [UDC01 README](https://github.com/IDXNow/UDC01) for full details.
+**What is UDC01?** Universal Data Converter is an AI-driven transformation framework that runs conversion, verification, and validation with a 2/3 majority voting mechanism.  That design gives us higher consistency on ambiguous source data and less manual cleanup work downstream.  See the [UDC01 README](https://github.com/IDXNow/UDC01) for full details.
 
 ## I Have a File and I Need It Converted
 
-Find your format, copy the command, and run it.  Every recipe supports single-file or batch mode.
+This section answers the fastest path-to-value question: "I have a file right now, what command should I run?"  Every recipe supports single-file and batch mode so the same pattern works for testing and production runs.
 
 **PDF** - *stop retyping documents by hand*
 ```bash
@@ -20,7 +20,7 @@ python udc01.py --conversion "extraction/pdf-to-json/gift_order_pdf_conv.yaml" \
 python udc01.py --conversion "extraction/pdf-to-json/gift_order_pdf_conv.yaml" \
                 --folder "path/to/your/pdfs" --pattern "*.pdf"
 ```
-→ [Full recipe details](extraction/pdf-to-json/)
+-> [Full recipe details](extraction/pdf-to-json/)
 
 **EDI 835 (Healthcare Remittance)** - *turn cryptic remittance files into clean JSON*
 ```bash
@@ -30,7 +30,7 @@ python udc01.py --conversion "conversion/edi835-to-json/edi835_to_json_remittanc
 python udc01.py --conversion "conversion/edi835-to-json/edi835_to_json_remittance_conv.yaml" \
                 --folder "path/to/your/edi-files" --pattern "*.edi"
 ```
-→ [Full recipe details](conversion/edi835-to-json/)
+-> [Full recipe details](conversion/edi835-to-json/)
 
 **EDI 856 (Advance Ship Notice)** - *make sense of shipping notifications*
 ```bash
@@ -40,7 +40,7 @@ python udc01.py --conversion "conversion/edi856-to-json/edi856_to_json_conv.yaml
 python udc01.py --conversion "conversion/edi856-to-json/edi856_to_json_conv.yaml" \
                 --folder "path/to/your/edi-files" --pattern "*.edi"
 ```
-→ [Full recipe details](conversion/edi856-to-json/)
+-> [Full recipe details](conversion/edi856-to-json/)
 
 **ACH/NACHA (Payment File)** - *decode fixed-width payment records into readable JSON*
 ```bash
@@ -50,9 +50,9 @@ python udc01.py --conversion "conversion/ach-to-json/nacha_ach_enrichment_conv.y
 python udc01.py --conversion "conversion/ach-to-json/nacha_ach_enrichment_conv.yaml" \
                 --folder "path/to/your/ach-files" --pattern "*.ach"
 ```
-→ [Full recipe details](conversion/ach-to-json/)
+-> [Full recipe details](conversion/ach-to-json/)
 
-**Customer Reviews → Sentiment Analysis** - *convert and understand in one step*
+**Customer Reviews -> Sentiment Analysis** - *convert and understand in one step*
 ```bash
 python udc01.py --conversion "enrichment/sentiment-analysis/product_review_sentiment_conv.yaml" \
                 --file "path/to/your/reviews.csv"
@@ -60,9 +60,9 @@ python udc01.py --conversion "enrichment/sentiment-analysis/product_review_senti
 python udc01.py --conversion "enrichment/sentiment-analysis/product_review_sentiment_conv.yaml" \
                 --folder "path/to/your/reviews" --pattern "*.csv"
 ```
-→ [Full recipe details](enrichment/sentiment-analysis/)
+-> [Full recipe details](enrichment/sentiment-analysis/)
 
-**Support Tickets → Auto-Triage** - *categorize, prioritize, and route automatically*
+**Support Tickets -> Auto-Triage** - *categorize, prioritize, and route automatically*
 ```bash
 python udc01.py --conversion "enrichment/ticket-categorization/support_ticket_triage_conv.yaml" \
                 --file "path/to/your/tickets.csv"
@@ -70,12 +70,12 @@ python udc01.py --conversion "enrichment/ticket-categorization/support_ticket_tr
 python udc01.py --conversion "enrichment/ticket-categorization/support_ticket_triage_conv.yaml" \
                 --folder "path/to/your/tickets" --pattern "*.csv"
 ```
-→ [Full recipe details](enrichment/ticket-categorization/)
+-> [Full recipe details](enrichment/ticket-categorization/)
 
 <details>
 <summary><strong>More formats: CSV, XML, Excel, HTML, bank transactions</strong></summary>
 
-**CSV → Pipe-delimited**
+**CSV -> Pipe-delimited**
 ```bash
 python udc01.py --conversion "conversion/csv-to-pipe/sales_invoice_conv.yaml" \
                 --file "path/to/your/data.csv"
@@ -83,9 +83,9 @@ python udc01.py --conversion "conversion/csv-to-pipe/sales_invoice_conv.yaml" \
 python udc01.py --conversion "conversion/csv-to-pipe/sales_invoice_conv.yaml" \
                 --folder "path/to/your/csvs" --pattern "*.csv"
 ```
-→ [Full recipe details](conversion/csv-to-pipe/)
+-> [Full recipe details](conversion/csv-to-pipe/)
 
-**XML → Pipe-delimited**
+**XML -> Pipe-delimited**
 ```bash
 python udc01.py --conversion "conversion/xml-to-pipe/product_inventory_conv.yaml" \
                 --file "path/to/your/data.xml"
@@ -93,9 +93,9 @@ python udc01.py --conversion "conversion/xml-to-pipe/product_inventory_conv.yaml
 python udc01.py --conversion "conversion/xml-to-pipe/product_inventory_conv.yaml" \
                 --folder "path/to/your/xml-files" --pattern "*.xml"
 ```
-→ [Full recipe details](conversion/xml-to-pipe/)
+-> [Full recipe details](conversion/xml-to-pipe/)
 
-**Excel → Pipe-delimited**
+**Excel -> Pipe-delimited**
 ```bash
 python udc01.py --conversion "conversion/xlsx-to-pipe/customer_order_conv.yaml" \
                 --file "path/to/your/spreadsheet.xlsx"
@@ -103,9 +103,9 @@ python udc01.py --conversion "conversion/xlsx-to-pipe/customer_order_conv.yaml" 
 python udc01.py --conversion "conversion/xlsx-to-pipe/customer_order_conv.yaml" \
                 --folder "path/to/your/spreadsheets" --pattern "*.xlsx"
 ```
-→ [Full recipe details](conversion/xlsx-to-pipe/)
+-> [Full recipe details](conversion/xlsx-to-pipe/)
 
-**HTML → CSV**
+**HTML -> CSV**
 ```bash
 python udc01.py --conversion "conversion/html-to-csv/job_listing_conv.yaml" \
                 --file "path/to/your/page.html"
@@ -113,9 +113,9 @@ python udc01.py --conversion "conversion/html-to-csv/job_listing_conv.yaml" \
 python udc01.py --conversion "conversion/html-to-csv/job_listing_conv.yaml" \
                 --folder "path/to/your/pages" --pattern "*.html"
 ```
-→ [Full recipe details](conversion/html-to-csv/)
+-> [Full recipe details](conversion/html-to-csv/)
 
-**HTML → JSON**
+**HTML -> JSON**
 ```bash
 python udc01.py --conversion "extraction/html-to-json/real_estate_listing_conv.yaml" \
                 --file "path/to/your/page.html"
@@ -123,9 +123,9 @@ python udc01.py --conversion "extraction/html-to-json/real_estate_listing_conv.y
 python udc01.py --conversion "extraction/html-to-json/real_estate_listing_conv.yaml" \
                 --folder "path/to/your/pages" --pattern "*.html"
 ```
-→ [Full recipe details](extraction/html-to-json/)
+-> [Full recipe details](extraction/html-to-json/)
 
-**Bank Transactions → Classified**
+**Bank Transactions -> Classified**
 ```bash
 python udc01.py --conversion "enrichment/transaction-classification/business_transaction_categorize_conv.yaml" \
                 --file "path/to/your/transactions.csv"
@@ -133,11 +133,13 @@ python udc01.py --conversion "enrichment/transaction-classification/business_tra
 python udc01.py --conversion "enrichment/transaction-classification/business_transaction_categorize_conv.yaml" \
                 --folder "path/to/your/exports" --pattern "*.csv"
 ```
-→ [Full recipe details](enrichment/transaction-classification/)
+-> [Full recipe details](enrichment/transaction-classification/)
 
 </details>
 
 ## Categories
+
+These categories are organized by outcome, not by file type, so teams can choose the right pattern based on the business problem they are solving.
 
 | Category | Recipes | Description |
 |---|---|---|
@@ -147,6 +149,8 @@ python udc01.py --conversion "enrichment/transaction-classification/business_tra
 | [code-transform/](code-transform/) | 1 | Code-to-code transformations - SQL view restructuring |
 
 ## All Recipes
+
+Use this table as a build menu.  It tells you what each recipe consumes, what it produces, and what operational job it is designed to handle.
 
 | Recipe | Input | Output | Category |
 |---|---|---|---|
@@ -167,7 +171,9 @@ python udc01.py --conversion "enrichment/transaction-classification/business_tra
 
 ## Quick Start
 
-1. **Install and configure UDC01** — Follow the [UDC01 setup guide](https://github.com/IDXNow/UDC01) to install dependencies and configure your LLM provider.  Copy [_shared/sample_configs/default_config.json](_shared/sample_configs/default_config.json) to your UDC01 config location and set your default model profile - local or cloud API, it's all in the one file.
+This section gets you from clone to first successful run with the least friction.
+
+1. **Install and configure UDC01** - Follow the [UDC01 setup guide](https://github.com/IDXNow/UDC01) to install dependencies and configure your LLM provider.  Copy [_shared/sample_configs/default_config.json](_shared/sample_configs/default_config.json) to your UDC01 config location and set your default model profile.  We keep cloud and local options in one config so teams can switch environments without rewriting recipes.
 
 2. **Clone this cookbook:**
    ```bash
@@ -180,13 +186,13 @@ python udc01.py --conversion "enrichment/transaction-classification/business_tra
                    --file "UDC-Cookbook/conversion/csv-to-pipe/sales_invoice.csv"
    ```
 
-Once UDC01 is configured, there's no per-recipe setup - just point it at your data and run it.
+Once UDC01 is configured, there is no per-recipe setup.  That is deliberate: a consistent runtime contract across recipes reduces onboarding time and operational mistakes.
 
 ## Configuration
 
-A sample configuration file is provided in [_shared/sample_configs/](_shared/sample_configs/):
+A sample configuration file is provided in [_shared/sample_configs/](_shared/sample_configs/).  This section exists so you can tune reliability, speed, and cost with clear levers instead of trial and error.
 
-- **default_config.json** — Includes provider profiles for OpenAI, Anthropic, Google, and local servers.  Set `default_provider` at the top level, or override per agent-group or per individual agent.  API keys are resolved from environment variables (`${OPENAI_API_KEY}`, `${ANTHROPIC_API_KEY}`, `${GOOGLE_API_KEY}`).
+- **default_config.json** - Includes provider profiles for OpenAI, Anthropic, Google, and local servers.  Set `default_provider` at the top level, or override per agent-group or per individual agent.  API keys are resolved from environment variables (`${OPENAI_API_KEY}`, `${ANTHROPIC_API_KEY}`, `${GOOGLE_API_KEY}`), which keeps secrets out of recipe files.
 
 Key configuration options (UDC01 v1.0.1):
 
@@ -204,7 +210,7 @@ See the [UDC01 configuration docs](https://github.com/IDXNow/UDC01#cloud-provide
 
 ## Troubleshooting
 
-Running into issues? See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for common errors and fixes.
+When something breaks, go to [TROUBLESHOOTING.md](TROUBLESHOOTING.md). It is organized around the errors teams hit in real runs and how we resolve them quickly.
 
 ## Repository Structure
 
@@ -214,7 +220,7 @@ UDC-Cookbook/
 ├── CONTRIBUTING.md
 ├── TROUBLESHOOTING.md
 ├── recipes.yaml
-├── conversion/              # Format A → Format B
+├── conversion/              # Format A -> Format B
 │   ├── csv-to-pipe/
 │   ├── xml-to-pipe/
 │   ├── xlsx-to-pipe/
@@ -223,7 +229,7 @@ UDC-Cookbook/
 │   ├── edi835-to-json/
 │   ├── ach-to-json/
 │   └── json-to-csv/
-├── extraction/              # Unstructured → Structured
+├── extraction/              # Unstructured -> Structured
 │   ├── html-to-json/
 │   └── pdf-to-json/
 ├── enrichment/              # Convert + augment with AI insight
@@ -238,8 +244,14 @@ UDC-Cookbook/
 
 ## Adding a New Recipe
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines and use [_template/](_template/) as your starting point.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution workflow and use [_template/](_template/) as your starting point. We use a template-first approach so new recipes stay consistent and easier to operate.
 
 ## License
 
-Copyright (c) 2026 Steve Wint / I D X — [MIT License](LICENSE)
+Copyright (c) 2026 Steve Wint / I D X - [MIT License](LICENSE)
+
+
+
+
+
+

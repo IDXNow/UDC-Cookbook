@@ -1,10 +1,9 @@
 # Conversion Recipes
 
-**Whatever format your data is stuck in, there's a recipe to get it out.** Format A -> Format B - clean structural mapping, no guesswork.
+This category exists for direct format-to-format transformations where structure matters more than domain enrichment. We use these patterns when teams need reliable shape conversion that feeds downstream systems with minimal manual cleanup.
 
-These recipes handle direct format transformations - taking data in one structure and converting it to another. From simple CSV-to-pipe conversions to full EDI parsing, just point it at your file and go.
+These recipes turn data from one format into another, from straightforward CSV-to-pipe mappings to complex EDI parsing. Each recipe is designed to be runnable as-is and then customized to match your field mappings and target schema.
 
-Use each recipe as a baseline pattern. You are expected to customize field mappings, output structure, and validation details for your own source systems and downstream requirements.
 ## Recipes
 
 | Recipe | Input | Output | Description |

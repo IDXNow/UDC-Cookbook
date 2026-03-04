@@ -1,8 +1,6 @@
 # Development notes and working files
 Notes/
 
-# Claude Code local settings
-.claude/
 
 # Python
 __pycache__/
@@ -28,3 +26,4 @@ desktop.ini
 .idea/
 *.swp
 *.swo
+.claude/

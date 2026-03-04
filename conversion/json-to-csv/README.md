@@ -1,6 +1,6 @@
 # JSON to CSV - CRM Contacts
 
-*Got a JSON export from your CRM? This recipe flattens nested contact records into a clean CSV you can open in Excel or import anywhere.*
+*We use this recipe to turn nested CRM exports into flat records that downstream tools can ingest without custom parsing.*
 
 > Converts a JSON array of CRM contact objects to CSV format, flattening nested address fields and extracting the primary phone number.
 
@@ -69,10 +69,11 @@ python udc01.py --conversion "conversion/json-to-csv/crm_contacts_conv.yaml" \
 
 ## Adapt This Recipe
 
-This example uses CRM contacts, but the pattern works for any JSON-to-CSV conversion involving nested objects or arrays. In the YAML:
+This example uses CRM contacts, but we designed the pattern for any JSON-to-CSV conversion with nested objects or arrays. In the YAML:
 
 - **Change the field names** - Update the column list and flattening instructions to match your JSON schema (e.g., `customer.address.city` instead of `address.city`)
 - **Select from arrays differently** - Adjust the phone selection rule to pick last, all, or a specific type (e.g., extract all emails from a `contacts` array into separate columns)
 - **Add or remove columns** - Trim the output to only the fields your target system needs, or add extra nested fields
-- **Rename output fields** - Map source names to whatever your downstream system expects (e.g., `first_name` → `First Name`)
+- **Rename output fields** - Map source names to whatever your downstream system expects (e.g., `first_name` -> `First Name`)
 - **Handle missing fields** - The prompt instructs the model to leave empty values for missing fields; adjust the fallback behavior as needed
+

@@ -1,10 +1,12 @@
 # Troubleshooting
 
-Common issues and how to fix them. If your problem isn't listed here, check the [UDC01 README](https://github.com/IDXNow/UDC01) or open an issue.
+This guide covers the issues teams hit most often and the exact fix we use in production.  If your issue is not listed, check the [UDC01 README](https://github.com/IDXNow/UDC01) or open an issue.
 
 ---
 
 ## Setup & Dependencies
+
+Start here when a recipe fails before conversion begins.  These checks remove environment drift first.
 
 ### `ModuleNotFoundError: No module named 'pdfplumber'`
 
@@ -48,6 +50,8 @@ pip install -r requirements.txt
 
 ## API Key Issues
 
+Use this section when requests reach the provider but authentication or quota rules block execution.
+
 ### `401 Unauthorized` or `Authentication error`
 
 **Cause:** Missing or invalid API key for the cloud provider you're using.
@@ -83,7 +87,7 @@ echo $env:OPENAI_API_KEY
 
 **Fix:**
 - Reduce `max_parallel_workers` in your config file (default is `2`)
-- Wait a moment and retry — UDC01 has built-in retry with exponential backoff (`api_retry_attempts` and `api_retry_backoff` in config)
+- Wait a moment and retry - UDC01 has built-in retry with exponential backoff (`api_retry_attempts` and `api_retry_backoff` in config)
 - Check your provider's rate limit tier and consider upgrading if you're doing batch work
 
 ### Agent is using the wrong provider or model
@@ -99,11 +103,13 @@ echo $env:OPENAI_API_KEY
   "data_conversion": { "provider": "anthropic", ... }
 }
 ```
-Provider keys are case-sensitive (`"anthropic"` ≠ `"Anthropic"`).
+Provider keys are case-sensitive (`"anthropic"` â‰  `"Anthropic"`).
 
 ---
 
 ## Connection Issues
+
+These errors mean UDC01 cannot reliably reach a model endpoint. Resolve transport before tuning prompts.
 
 ### `Connection refused` (local model)
 
@@ -112,7 +118,7 @@ Provider keys are case-sensitive (`"anthropic"` ≠ `"Anthropic"`).
 **Fix:**
 1. Make sure your local LLM server is running (e.g., LM Studio, Ollama, etc.)
 2. Check that the URL in your config matches the server's address (default: `http://localhost:1234`)
-3. Verify the port number — different servers use different defaults
+3. Verify the port number - different servers use different defaults
 
 ### `Timeout` or `api_timeout` errors
 
@@ -128,12 +134,14 @@ The default is 600 seconds (10 minutes). For very large files or complex recipes
 
 ## Conversion Issues
 
+This section covers runs that execute but produce weak, incomplete, or inconsistent results.
+
 ### Conversion succeeds but output is wrong or incomplete
 
 **Cause:** The model may not be capable enough for the recipe's complexity.
 
 **Fix:**
-- Check the recipe's **Model Requirements** section — some recipes (especially EDI 835) require high-end models
+- Check the recipe's **Model Requirements** section - some recipes (especially EDI 835) require high-end models
 - Switch to a more capable model: GPT-4o, Claude Sonnet/Opus, or Gemini Pro
 - You can set the provider per-agent in your config file to use a stronger model for the conversion agent specifically
 
@@ -142,9 +150,9 @@ The default is 600 seconds (10 minutes). For very large files or complex recipes
 **Cause:** UDC01's 2/3 majority voting mechanism flagged a discrepancy. This is more common with smaller models where validators may disagree.
 
 **Fix:**
-- Try running again — LLM outputs vary between runs
+- Try running again - LLM outputs vary between runs
 - Increase `max_retries` in your config (default: `3`) for more attempts
-- Use a stronger model — validation consistency improves with model quality
+- Use a stronger model - validation consistency improves with model quality
 - Check the log files in `logs/` for details on what the validators disagreed about
 
 ### `Validation failed after N retries`
@@ -162,7 +170,7 @@ The default is 600 seconds (10 minutes). For very large files or complex recipes
 
 ### `thinking_budget` has no effect / model returns an error with thinking enabled
 
-**Cause:** `thinking_budget` is supported by Anthropic and Google providers only.  Using it with an OpenAI or local model will cause an error or be silently ignored.  Anthropic also forces `temperature: 1` internally when `thinking_budget` is set — any other temperature value in the config is overridden.
+**Cause:** `thinking_budget` is supported by Anthropic and Google providers only.  Using it with an OpenAI or local model will cause an error or be silently ignored.  Anthropic also forces `temperature: 1` internally when `thinking_budget` is set - any other temperature value in the config is overridden.
 
 **Fix:** Only set `thinking_budget` on agents using an Anthropic or Google provider:
 ```json
@@ -171,7 +179,7 @@ The default is 600 seconds (10 minutes). For very large files or complex recipes
 
 ### `reasoning_effort` has no effect
 
-**Cause:** `reasoning_effort` (`"low"`, `"medium"`, `"high"`) is for OpenAI o-series models only.  It is mutually exclusive with `temperature` — setting both on the same agent causes an error.
+**Cause:** `reasoning_effort` (`"low"`, `"medium"`, `"high"`) is for OpenAI o-series models only.  It is mutually exclusive with `temperature` - setting both on the same agent causes an error.
 
 **Fix:** Use `reasoning_effort` only on OpenAI o-series agents and remove the `temperature` key:
 ```json
@@ -191,6 +199,8 @@ The default is 600 seconds (10 minutes). For very large files or complex recipes
 
 ## File & Path Issues
 
+Use these checks when commands are valid but inputs are not being discovered or loaded correctly.
+
 ### `FileNotFoundError` for the conversion YAML
 
 **Cause:** The path to the conversion YAML is relative to where you're running `udc01.py` from.
@@ -209,7 +219,7 @@ python udc01.py --conversion "UDC-Cookbook/conversion/csv-to-pipe/sales_invoice_
 **Fix:**
 - Double-check the folder path exists and contains files
 - Make sure the pattern matches your files (e.g., `*.csv`, `*.edi`, `*.pdf`)
-- Patterns are case-sensitive on Linux/Mac — `*.CSV` won't match `file.csv`
+- Patterns are case-sensitive on Linux/Mac - `*.CSV` won't match `file.csv`
 
 ### PDF extraction returns empty or garbled text
 
@@ -222,6 +232,8 @@ python udc01.py --conversion "UDC-Cookbook/conversion/csv-to-pipe/sales_invoice_
 ---
 
 ## Performance Tips
+
+These tuning patterns help you balance throughput, cost, and reliability for larger workloads.
 
 ### Slow conversions
 
@@ -245,7 +257,10 @@ python udc01.py --conversion "UDC-Cookbook/conversion/csv-to-pipe/sales_invoice_
 
 ## Still Stuck?
 
+If the quick fixes do not resolve the issue, use the escalation path below so we can isolate root cause quickly.
+
 1. Check the log files in `logs/` for detailed error messages and agent responses
 2. Review the recipe's README for model requirements and known constraints
-3. Try the sample files included with each recipe first — if those work, the issue is with your input file
+3. Try the sample files included with each recipe first - if those work, the issue is with your input file
 4. Open an issue on the [UDC-Cookbook repo](https://github.com/IDXNow/UDC-Cookbook/issues) or the [UDC01 repo](https://github.com/IDXNow/UDC01/issues)
+

@@ -1,12 +1,12 @@
 # Excel to Pipe-Delimited - Customer Orders
 
-*Got order data stuck in a spreadsheet? This recipe pulls it out with clean dates, consistent formatting, and standardized columns.*
+*We use this recipe when spreadsheet-based order data needs to move into deterministic pipeline-friendly format.*
 
 > Converts an Excel spreadsheet of customer orders to pipe-delimited format with standardized columns and date/number formatting.
 
 ## What This Solves
 
-Customer order data lives in Excel spreadsheets with varying column names, inconsistent dates, and messy number formats. This recipe standardizes everything - enforces YYYY-MM-DD dates, normalizes currency to two decimal places, and outputs a clean pipe-delimited file.
+Customer order data in spreadsheets usually includes inconsistent headers, mixed date formats, and uneven numeric precision. This recipe standardizes those fields into a stable pipe-delimited contract so downstream jobs can trust dates, amounts, and column order without additional cleansing logic.
 
 ## Input
 
@@ -50,10 +50,11 @@ python udc01.py --conversion "conversion/xlsx-to-pipe/customer_order_conv.yaml" 
 
 ## Adapt This Recipe
 
-This example pulls customer orders from a spreadsheet, but the pattern works for any Excel-to-pipe conversion. In the YAML:
+This example uses customer orders, but we designed the pattern for any Excel-to-pipe conversion where format consistency drives downstream reliability. In the YAML:
 
 - **Match your column names** - Update the field mapping to reflect the actual headers in your workbook
 - **Target a specific sheet** - If your workbook has multiple sheets, add a sheet name instruction to the prompt
 - **Change date and number formats** - Adjust formatting rules to match whatever your target system requires (e.g., MM/DD/YYYY instead of YYYY-MM-DD, integers instead of decimals)
 - **Drop or add columns** - Include only the fields your downstream system needs; add derived columns if useful
 - **Change the output format** - Swap pipe-delimited for CSV, JSON, or another format as needed
+

@@ -1,14 +1,14 @@
 # Ticket Categorization - Support Tickets
 
-*Your support inbox shouldn't be a bottleneck. This recipe reads every ticket, figures out what it's about, how urgent it is, and routes it to the right team - automatically.*
+*We use this recipe to move support teams from manual triage to consistent, machine-assisted routing.*
 
 > Converts support ticket data from CSV to pipe-delimited format while enriching each record with AI-derived categorization, priority, routing, and emotion fields.
 
 ## What This Solves
 
-Support tickets arrive as unstructured text with a subject line and a free-form description. Someone has to read each one, decide what category it falls into, gauge the urgency, figure out which team should handle it, and route it - over and over, all day long. That's slow, inconsistent, and burns out your best people.
+Support tickets arrive as free text, so manual triage creates queue delays and inconsistent routing outcomes.
 
-This recipe does the triage for you. It preserves the original ticket metadata and adds five AI-generated fields so each ticket arrives pre-categorized, prioritized, and routed to the right department. Your team can skip the sorting and jump straight to solving.
+This recipe preserves original metadata and adds five AI-derived fields so tickets arrive pre-categorized, prioritized, and routed to the right department. Teams can move from sorting work to resolving work, which improves response time and SLA performance.
 
 ## What You'll Get
 
@@ -69,10 +69,11 @@ python udc01.py --conversion "enrichment/ticket-categorization/support_ticket_tr
 
 ## Adapt This Recipe
 
-This example uses generic support categories, but your team's taxonomy is probably more specific. In the YAML:
+This example uses generic support categories, but we expect most teams to align the taxonomy to their own support model. In the YAML:
 
 - **Define your own categories and subcategories** - Replace the generic categories (Technical, Billing, Account, Inquiry) with the classifications your team actually uses for reporting and routing
 - **Update department routing** - Change the routing targets to match your actual team names, queues, or ticketing system values
 - **Adjust priority logic** - Update the prompt to define what "Critical" and "High" mean in your context (e.g., revenue impact thresholds, SLA tiers, affected user count)
 - **Add or replace enrichment fields** - Add fields like `EstimatedResolutionTime`, `RelatedProduct`, `SLABreach`, or `RequiresManagerApproval` based on your workflow needs
 - **Apply to other intake formats** - The same pattern works for HR requests, facilities tickets, change requests, or any structured text where classification and routing are needed
+

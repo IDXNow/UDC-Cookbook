@@ -1,8 +1,8 @@
 # Code Transform Recipes
 
-**Pattern:** Code-to-code transformation
+This category focuses on repeatable code-to-code changes where consistency matters more than one-off manual edits. We use these recipes to apply structural transformations across many files with predictable output.
 
-These recipes take source code as input and produce modified or enhanced code as output — adding joins, restructuring queries, or federating views across systems.
+These patterns are useful when teams need to evolve SQL or other code assets at scale without introducing drift between environments.
 
 ## Recipes
 

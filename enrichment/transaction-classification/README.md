@@ -1,12 +1,12 @@
-# Transaction Classification — Business Transactions
+# Transaction Classification â€” Business Transactions
 
-*`AMZN MKTP US*2K7YR4QT1` — what even is that? This recipe reads your bank transactions and tells you: it's Amazon, it's office supplies, and yes, it's tax-deductible.*
+*We use this recipe to decode raw bank transaction strings into accounting-ready records.*
 
 > Converts bank transaction data from CSV to pipe-delimited format while enriching each record with AI-derived accounting classifications, tax deductibility flags, and vendor identification.
 
 ## What This Solves
 
-Bank transaction descriptions are cryptic shorthand that doesn't tell your accountant much. Manually classifying transactions for bookkeeping, tax prep, and financial reporting is tedious and error-prone. This recipe reads your raw bank export and enriches each transaction with accounting-ready classifications — category, subcategory, tax deductibility, and a clean vendor name.
+Bank transaction descriptions are cryptic by design, which makes manual classification slow and inconsistent. This recipe enriches raw exports with category, subcategory, tax deductibility, and normalized vendor name so bookkeeping and reporting workflows can run with less manual interpretation.
 
 ## Input
 
@@ -65,23 +65,24 @@ python udc01.py --conversion "enrichment/transaction-classification/business_tra
 ## Model Requirements
 
 - A capable model is recommended for accurately interpreting cryptic bank transaction descriptions
-- The model must recognize vendor abbreviations and merchant codes (e.g., `AMZN MKTP` → Amazon, `GUSTO PAY` → Gusto payroll)
+- The model must recognize vendor abbreviations and merchant codes (e.g., `AMZN MKTP` -> Amazon, `GUSTO PAY` -> Gusto payroll)
 - Tax deductibility determination requires general US business tax knowledge
 
 ## Use Cases
 
-This recipe demonstrates value for:
-- **Bookkeeping automation** — Classify transactions for import into accounting software (QuickBooks, Xero, etc.)
-- **Tax preparation** — Flag deductible expenses and categorize by tax schedule
-- **Expense reporting** — Auto-categorize corporate card transactions
-- **Financial analysis** — Generate spend-by-category breakdowns without manual tagging
+This section highlights where the pattern creates immediate operational value:
+- **Bookkeeping automation** â€” Classify transactions for import into accounting software (QuickBooks, Xero, etc.)
+- **Tax preparation** â€” Flag deductible expenses and categorize by tax schedule
+- **Expense reporting** â€” Auto-categorize corporate card transactions
+- **Financial analysis** â€” Generate spend-by-category breakdowns without manual tagging
 
 ## Adapt This Recipe
 
-This example uses a US business expense taxonomy, but your chart of accounts and rules will differ. In the YAML:
+This example uses a US business expense taxonomy, but we expect teams to align categories and rules with their own chart of accounts. In the YAML:
 
-- **Define your own category taxonomy** — Replace the generic categories with your actual chart of accounts, cost center codes, or expense policy categories
-- **Add a GL account field** — Extend the output with a `GLAccount` or `AccountCode` field and instruct the prompt to map each transaction to your specific general ledger codes
-- **Adjust tax deductibility rules** — Update the prompt for your jurisdiction and entity type (e.g., non-US tax rules, nonprofit expense policies, industry-specific deductions)
-- **Handle personal vs. business split** — For mixed-use accounts, add a `BusinessUsePercent` field and instruct the model to estimate the business portion
-- **Apply to other transaction sources** — The same pattern works for credit card exports, expense reports, procurement system data, or any feed with raw merchant descriptions that need classification
+- **Define your own category taxonomy** â€” Replace the generic categories with your actual chart of accounts, cost center codes, or expense policy categories
+- **Add a GL account field** â€” Extend the output with a `GLAccount` or `AccountCode` field and instruct the prompt to map each transaction to your specific general ledger codes
+- **Adjust tax deductibility rules** â€” Update the prompt for your jurisdiction and entity type (e.g., non-US tax rules, nonprofit expense policies, industry-specific deductions)
+- **Handle personal vs. business split** â€” For mixed-use accounts, add a `BusinessUsePercent` field and instruct the model to estimate the business portion
+- **Apply to other transaction sources** â€” The same pattern works for credit card exports, expense reports, procurement system data, or any feed with raw merchant descriptions that need classification
+
