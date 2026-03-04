@@ -2,7 +2,7 @@
 
 # UDC-Cookbook
 
-This repository as a practical cookbook for [UDC01](https://github.com/IDXNow/UDC01): copy a recipe, point it at your file, and get production-ready output fast.  Each recipe is self-contained with YAML configuration, sample input, expected output, and focused documentation so that anyone can run and extend patterns without setup fatigue.
+This repository is a practical cookbook for [UDC01](https://github.com/IDXNow/UDC01): copy a recipe, point it at your file, and get production-ready output fast.  Each recipe is self-contained with YAML configuration, sample input, expected output, and focused documentation so that anyone can run and extend patterns without setup fatigue.
 
 These recipes are starting points, not constraints.  You'll see clear baseline patterns so you can customize mappings, prompts, schemas, and validation rules without reverse-engineering the framework first.
 
