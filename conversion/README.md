@@ -16,3 +16,5 @@ These recipes turn data from one format into another, from straightforward CSV-t
 | [edi835-to-json/](edi835-to-json/) | EDI X12 835 | JSON | Healthcare Remittance Advice with AI-enriched code descriptions |
 | [ach-to-json/](ach-to-json/) | ACH/NACHA | JSON | Fixed-width payment file with decoded transaction codes and bank identification |
 | [json-to-csv/](json-to-csv/) | JSON | CSV | CRM contacts with nested address and phone array flattening |
+| [math-to-latex/](math-to-latex/) | Text (ASCII math) | LaTeX | Plain math notation to render-ready LaTeX |
+| [math-to-mathml/](math-to-mathml/) | Text (ASCII math) | MathML | Plain math notation to Presentation MathML |

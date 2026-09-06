@@ -16,6 +16,9 @@
 # Fixed-width positional parsing requires precise character-counting that smaller models
 # may struggle with. The routing number → bank name enrichment is also knowledge-intensive.
 
+# Fixed-width offsets are easy to miss by one - the prior output shows the agent exactly which field slipped.
+include_prior_output_on_retry: true
+
 data_conversion_system_msg: |
   You are a payment systems specialist agent. Your task is to parse a NACHA/ACH fixed-width
   payment file and produce structured, enriched JSON output.

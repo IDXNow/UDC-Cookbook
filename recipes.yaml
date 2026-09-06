@@ -155,6 +155,42 @@ recipes:
       --conversion "conversion/json-to-csv/crm_contacts_conv.yaml"
       --file "conversion/json-to-csv/crm_contacts.json"
 
+  - id: math-to-latex
+    name: Math Notation to LaTeX — Formula Conversion
+    category: conversion
+    path: conversion/math-to-latex
+    input_format: txt
+    output_format: latex
+    industry: education
+    difficulty: beginner
+    model_tier: any
+    description: Plain ASCII math formula converted to render-ready LaTeX with semantic-equivalence validation
+    conversion_yaml: conversion/math-to-latex/math_formula_latex_conv.yaml
+    sample_file: conversion/math-to-latex/quadratic_formula.txt
+    sample_command: >
+      python udc01.py
+      --conversion "conversion/math-to-latex/math_formula_latex_conv.yaml"
+      --folder "conversion/math-to-latex"
+      --pattern "*.txt"
+
+  - id: math-to-mathml
+    name: Math Notation to MathML — Formula Conversion
+    category: conversion
+    path: conversion/math-to-mathml
+    input_format: txt
+    output_format: mathml
+    industry: education
+    difficulty: intermediate
+    model_tier: recommended
+    description: Plain ASCII math formula converted to Presentation MathML with element-arity and semantic-equivalence validation
+    conversion_yaml: conversion/math-to-mathml/math_formula_mathml_conv.yaml
+    sample_file: conversion/math-to-mathml/quadratic_formula.txt
+    sample_command: >
+      python udc01.py
+      --conversion "conversion/math-to-mathml/math_formula_mathml_conv.yaml"
+      --folder "conversion/math-to-mathml"
+      --pattern "*.txt"
+
   - id: html-to-json
     name: HTML to JSON — Real Estate Listing
     category: extraction

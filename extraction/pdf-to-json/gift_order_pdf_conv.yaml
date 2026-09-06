@@ -2,6 +2,9 @@
 # Extracts structured data from order documents (invoices, receipts, purchase orders)
 # Output format: Simplified JSON schema optimized for local model extraction
 
+# Extraction misses are usually partial - retrying with the previous JSON in hand preserves the fields that were already right.
+include_prior_output_on_retry: true
+
 data_conversion_system_msg: |
   You are a document data extraction agent.  Extract structured information from order documents into JSON format.
 

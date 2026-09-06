@@ -80,6 +80,19 @@ The `v_*.sql` pattern targets only the input view files and skips the expected o
 - Works with any supported LLM provider (local, OpenAI, Anthropic, Google)
 - Structural SQL rewriting — no special model capabilities required
 
+## Pre-Conversion Verification Is Off
+
+This is the one cookbook recipe that ships with UDC01's pre-conversion verification disabled:
+
+```yaml
+verification:
+  enabled: false
+```
+
+The input is machine-generated `CREATE VIEW` DDL from a controlled source, so its shape is guaranteed before the run starts. Verifying it would cost up to three extra agent calls per file and catch nothing. Post-conversion validation still runs with the full 2/3 consensus — the output is what needs checking here, not the input.
+
+If you point this recipe at hand-written or untrusted SQL, delete the block (or set `enabled: true`). The `data_verification_system_msg` and `data_verification_request_msg` fields are still present in the YAML, so verification comes straight back with that one-line change.
+
 ## Adapt This Recipe
 
 This example joins to `d_customer` on `customer_no`, but the pattern applies to any repeating structural change across SQL files. In the YAML:

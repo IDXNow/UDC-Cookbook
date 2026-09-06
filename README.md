@@ -73,7 +73,7 @@ python udc01.py --conversion "enrichment/ticket-categorization/support_ticket_tr
 -> [Full recipe details](enrichment/ticket-categorization/)
 
 <details>
-<summary><strong>More formats: CSV, XML, Excel, HTML, bank transactions</strong></summary>
+<summary><strong>More formats: CSV, XML, Excel, HTML, bank transactions, math formulas, SQL</strong></summary>
 
 **CSV -> Pipe-delimited**
 ```bash
@@ -135,6 +135,16 @@ python udc01.py --conversion "enrichment/transaction-classification/business_tra
 ```
 -> [Full recipe details](enrichment/transaction-classification/)
 
+**Math Formulas -> LaTeX / MathML** - *turn plain-notation formulas into publishable markup*
+```bash
+python udc01.py --conversion "conversion/math-to-latex/math_formula_latex_conv.yaml" \
+                --file "path/to/your/formula.txt"
+# Or batch a whole formula library:
+python udc01.py --conversion "conversion/math-to-latex/math_formula_latex_conv.yaml" \
+                --folder "path/to/your/formulas" --pattern "*.txt"
+```
+-> [LaTeX recipe](conversion/math-to-latex/) - [MathML recipe](conversion/math-to-mathml/)
+
 </details>
 
 ## Categories
@@ -143,7 +153,7 @@ These categories are organized by outcome, not by file type, so teams can choose
 
 | Category | Recipes | Description |
 |---|---|---|
-| [conversion/](conversion/) | 8 | Format A to Format B - CSV, XML, Excel, HTML, JSON, EDI, ACH |
+| [conversion/](conversion/) | 10 | Format A to Format B - CSV, XML, Excel, HTML, JSON, EDI, ACH, math notation |
 | [extraction/](extraction/) | 2 | Unstructured content to structured JSON - HTML pages, PDF documents |
 | [enrichment/](enrichment/) | 3 | Convert and augment records with AI insight (sentiment, categorization, classification) |
 | [code-transform/](code-transform/) | 1 | Code-to-code transformations - SQL view restructuring |
@@ -162,6 +172,8 @@ Use this table as a build menu.  It tells you what each recipe consumes, what it
 | [edi835-to-json](conversion/edi835-to-json/) | EDI 835 | JSON | Healthcare Remittance Advice with AI-enriched code descriptions |
 | [ach-to-json](conversion/ach-to-json/) | ACH/NACHA | JSON | Fixed-width payment file with decoded transaction codes and bank identification |
 | [json-to-csv](conversion/json-to-csv/) | JSON | CSV | CRM contacts with nested address and phone array flattening |
+| [math-to-latex](conversion/math-to-latex/) | Text | LaTeX | Plain math notation to render-ready LaTeX |
+| [math-to-mathml](conversion/math-to-mathml/) | Text | MathML | Plain math notation to Presentation MathML |
 | [html-to-json](extraction/html-to-json/) | HTML | JSON | Real estate listing with nested structure |
 | [pdf-to-json](extraction/pdf-to-json/) | PDF | JSON | Order document with line items and totals |
 | [sentiment-analysis](enrichment/sentiment-analysis/) | CSV | Pipe | Customer reviews enriched with sentiment, score, topics, urgency |
@@ -188,11 +200,20 @@ This section gets you from clone to first successful run with the least friction
 
 Once UDC01 is configured, there is no per-recipe setup.  That is deliberate: a consistent runtime contract across recipes reduces onboarding time and operational mistakes.
 
+**Building a recipe for a format we don't cover yet?**  UDC01 ships with **UDC-Studio**, a Streamlit app that profiles your data and generates a starting conversion YAML you can then refine into a recipe.  It is a builder, not a runner - you download the YAML and run it with `udc01.py` as usual.
+
+```bash
+pip install -r requirements_studio.txt
+python udc_studio.py
+```
+
+See the [UDC-Studio Guide](https://github.com/IDXNow/UDC01/blob/main/UDC-STUDIO.md) for the walkthrough.
+
 ## Configuration
 
 A sample configuration file is provided in [_shared/sample_configs/](_shared/sample_configs/).  This section exists so you can tune reliability, speed, and cost with clear levers instead of trial and error.
 
-- **default_config.json** - Includes provider profiles for OpenAI, Anthropic, Google, and local servers.  Set `default_provider` at the top level, or override per agent-group or per individual agent.  API keys are resolved from environment variables (`${OPENAI_API_KEY}`, `${ANTHROPIC_API_KEY}`, `${GOOGLE_API_KEY}`), which keeps secrets out of recipe files.
+- **default_config.json** - Includes provider profiles for OpenAI, Anthropic, Google, LM Studio, and Ollama.  Set `default_provider` at the top level, or override per agent-group or per individual agent.  API keys are resolved from environment variables (`${OPENAI_API_KEY}`, `${ANTHROPIC_API_KEY}`, `${GOOGLE_API_KEY}`), which keeps secrets out of recipe files.
 
 Key configuration options (UDC01 v1.0.1):
 
@@ -200,11 +221,50 @@ Key configuration options (UDC01 v1.0.1):
 |---|---|---|
 | `default_provider` | top-level or agent-group | Which provider profile to use by default |
 | `provider` / `model` / `temperature` | individual agent | Per-agent overrides (highest priority) |
-| `thinking_budget` | individual agent | Token budget for extended thinking (Anthropic / Google) |
-| `reasoning_effort` | individual agent | `"low"` / `"medium"` / `"high"` for OpenAI o-series (mutually exclusive with `temperature`) |
-| `max_tokens` | individual agent | Max output tokens per call |
+| `reasoning_effort` | provider profile, agent-group, or agent | Reasoning depth - works across **all** providers (Anthropic, Google, OpenAI, and local endpoints on the OpenAI wire format).  Accepted values vary by vendor, spanning `none` / `minimal` / `low` / `medium` / `high` / `xhigh` / `max` |
+| `thinking_budget` | provider profile, agent-group, or agent | *Legacy* token budget for extended thinking.  Still works on older Anthropic and Google models; current Claude models reject it - use `reasoning_effort` instead.  Setting both makes `reasoning_effort` win, with a warning in the log |
+| `max_tokens` / `default_max_tokens` | agent / profile or group | Max output tokens per call.  On reasoning models this covers thinking **and** output, so set it high enough for both |
+| `supports_temperature` | provider profile or agent | Set `false` for models that reject a `temperature` parameter |
+| `token_param` | provider profile or agent | Name of the token-limit field on the wire (OpenAI needs `max_completion_tokens`) |
+| `include_prior_output_on_retry` | top-level | `true` feeds the previous failed output back to the conversion agent on retry, alongside the validator error messages (default: `false`).  Overridable per recipe and at the command line - see below |
 | `parallel_agents` | top-level | `true` to run verification/validation agents concurrently |
+| `max_parallel_workers` | top-level | Max concurrent agent threads (default: `2`) |
+| `api_timeout` | top-level | API call timeout in seconds (default: `600`) |
 | `file_extension` in `file_save` | top-level | Set to `xlsx` to save tabular output as an Excel workbook |
+
+Provider, model, and the reasoning settings all resolve most-specific-first: individual agent, then role-group, then provider profile, then global.  See the [UDC01 Configuration Hierarchy Guide](https://github.com/IDXNow/UDC01/blob/main/CONFIGURATION.md) for the full resolution order.
+
+### Recipe-Level Runtime Keys
+
+A conversion YAML is not limited to prompts - two top-level keys let a recipe carry its own runtime behavior, so a pattern that needs different handling does not force a global config change.
+
+**Skip pre-conversion verification** when the source data's quality is already guaranteed (machine-generated files from a controlled system, for example).  This saves up to three agent calls per file:
+
+```yaml
+verification:
+  enabled: false
+```
+
+With verification off, `data_verification_system_msg` and `data_verification_request_msg` are no longer required and the pipeline goes straight to conversion.  Omit the block entirely to keep the default 2/3 verification consensus.
+
+**Feed the prior output back on retry** for complex conversions that converge faster when the agent can see what it produced and why the validators rejected it:
+
+```yaml
+include_prior_output_on_retry: true
+```
+
+This overrides the config file for that recipe only.  The CLI still wins over both - `--include-prior-output-on-retry` forces it on, `--no-include-prior-output-on-retry` forces it off, and omitting the flag defers to the recipe and then the config.
+
+### Self-Hosted and Custom Endpoints
+
+The `local` provider profile is a bring-your-own-endpoint slot, not a localhost-only setting.  Anything speaking the OpenAI chat-completions format works through it: LM Studio (`http://localhost:1234`), Ollama (`http://localhost:11434`, now a built-in profile), vLLM, llama.cpp, a LiteLLM proxy, or Azure OpenAI.  Provider names are arbitrary keys, so copy the profile and rename it when pointing at more than one endpoint.
+
+Two things to get right:
+
+- **Off localhost you need credentials.**  Add `auth_header` (plus `auth_prefix`) to the profile and an entry in `api_keys` keyed by the provider name.  Leave `auth_header` as `null` for LM Studio and Ollama and UDC01 sends nothing.
+- **Model IDs go over the wire verbatim.**  Namespaces are part of the name - copy them from `lms ls` or `ollama list` rather than trimming them.
+
+Reasoning-capable local models need output headroom: the shipped profiles set `default_max_tokens` to 16000 so the model has room to think *and* answer.  Set it too low and you get an empty response.  See [Custom Endpoints](https://github.com/IDXNow/UDC01/blob/main/CONFIGURATION.md#custom-endpoints-the-local-profile) in the UDC01 config guide for the full contract, including AWS Bedrock (which needs a signing proxy).
 
 See the [UDC01 configuration docs](https://github.com/IDXNow/UDC01#cloud-provider-configuration) for full setup details.
 
@@ -228,7 +288,9 @@ UDC-Cookbook/
 │   ├── edi856-to-json/
 │   ├── edi835-to-json/
 │   ├── ach-to-json/
-│   └── json-to-csv/
+│   ├── json-to-csv/
+│   ├── math-to-latex/
+│   └── math-to-mathml/
 ├── extraction/              # Unstructured -> Structured
 │   ├── html-to-json/
 │   └── pdf-to-json/

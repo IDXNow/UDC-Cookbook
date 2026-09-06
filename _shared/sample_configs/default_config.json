@@ -1,9 +1,7 @@
 {
   "default_provider": "openai",
-  "default_model": "gpt-5-mini",
-  "default_endpoint": "v1/chat/completions",
-  "default_temperature": 1,
   "max_retries": 3,
+  "include_prior_output_on_retry": false,
   "api_timeout": 600,
   "api_retry_attempts": 3,
   "api_retry_backoff": 2,
@@ -17,7 +15,16 @@
       "endpoint": "v1/chat/completions",
       "auth_header": null,
       "request_format": "openai",
-      "default_model": "openai/gpt-oss-20b"
+      "default_max_tokens": 16000,
+      "default_model": "zai-org/glm-4.6v-flash"
+    },
+    "ollama": {
+      "base_url": "http://localhost:11434",
+      "endpoint": "v1/chat/completions",
+      "auth_header": null,
+      "request_format": "openai",
+      "default_max_tokens": 16000,
+      "default_model": "qwen3:8b"
     },
     "openai": {
       "base_url": "https://api.openai.com",
@@ -25,7 +32,9 @@
       "auth_header": "Authorization",
       "auth_prefix": "Bearer",
       "request_format": "openai",
-      "default_model": "gpt-5-mini"
+      "token_param": "max_completion_tokens",
+      "default_model": "gpt-5.6-terra",
+      "default_reasoning_effort": "medium"
     },
     "anthropic": {
       "base_url": "https://api.anthropic.com",
@@ -35,7 +44,9 @@
       "version_header": "anthropic-version",
       "version": "2023-06-01",
       "request_format": "anthropic",
-      "default_model": "claude-sonnet-4-5"
+      "supports_temperature": false,
+      "default_max_tokens": 16000,
+      "default_model": "claude-sonnet-5"
     },
     "google": {
       "base_url": "https://generativelanguage.googleapis.com",
@@ -43,7 +54,8 @@
       "auth_header": "x-goog-api-key",
       "auth_prefix": "",
       "request_format": "google",
-      "default_model": "gemini-2.5-flash"
+      "supports_temperature": false,
+      "default_model": "gemini-3.6-flash"
     }
   },
   "api_keys": {
@@ -52,7 +64,6 @@
     "google": "${GOOGLE_API_KEY}"
   },
   "file_load": {
-    "default_file": "samples/sources/sales_invoice.csv",
     "folder": "samples/sources/",
     "search_pattern": "*.csv"
   },
@@ -60,7 +71,7 @@
     "folder": "output/",
     "file_extension": "txt"
   },
-  "log_file":{
+  "log_file": {
     "folder": "logs/",
     "file_extension": "log"
   },
@@ -97,7 +108,6 @@
         "role": "validate",
         "instructions": "data_validation_system_msg",
         "request_instructions": "data_validation_request_msg"
-        
       },
       {
         "name": "Macy Hopper",
@@ -113,16 +123,14 @@
         "request_instructions": "data_validation_request_msg"
       }
     ],
-    
     "log_message_router": {
       "name": "Bob Newton",
       "role": "route",
       "instructions": "log_message_routing_system_msg",
       "request_instructions": "log_message_routing_request_msg"
     },
-
     "message_composer": {
-      "name": "Message Composer",
+      "name": "Sam Euler",
       "role": "compose",
       "instructions": "message_composer_system_msg",
       "request_instructions": "message_composer_request_msg"
@@ -133,7 +141,6 @@
         "role": "validate",
         "instructions": "message_validation_system_msg",
         "request_instructions": "message_validation_request_msg"
-        
       },
       {
         "name": "Lisa Bohr",
@@ -149,6 +156,5 @@
         "request_instructions": "message_validation_request_msg"
       }
     ]
-    
   }
 }

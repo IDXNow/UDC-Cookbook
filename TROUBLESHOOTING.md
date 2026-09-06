@@ -103,7 +103,7 @@ echo $env:OPENAI_API_KEY
   "data_conversion": { "provider": "anthropic", ... }
 }
 ```
-Provider keys are case-sensitive (`"anthropic"` â‰  `"Anthropic"`).
+Provider keys are case-sensitive (`"anthropic"` ≠ `"Anthropic"`).
 
 ---
 
@@ -142,8 +142,10 @@ This section covers runs that execute but produce weak, incomplete, or inconsist
 
 **Fix:**
 - Check the recipe's **Model Requirements** section - some recipes (especially EDI 835) require high-end models
-- Switch to a more capable model: GPT-4o, Claude Sonnet/Opus, or Gemini Pro
+- Switch to a more capable model - current frontier tiers are GPT-5.x, Claude 5 (Opus/Sonnet), and Gemini 3.x
 - You can set the provider per-agent in your config file to use a stronger model for the conversion agent specifically
+
+UDC01 does not validate model IDs - whatever you put in the config is sent to the vendor verbatim, so a newly released model works without a code change.
 
 ### Validation fails but the conversion looks correct
 
@@ -152,6 +154,7 @@ This section covers runs that execute but produce weak, incomplete, or inconsist
 **Fix:**
 - Try running again - LLM outputs vary between runs
 - Increase `max_retries` in your config (default: `3`) for more attempts
+- Turn on `include_prior_output_on_retry` so the conversion agent sees what it produced last time, not just the rejection message - complex recipes often converge a retry sooner with it
 - Use a stronger model - validation consistency improves with model quality
 - Check the log files in `logs/` for details on what the validators disagreed about
 
@@ -166,25 +169,66 @@ This section covers runs that execute but produce weak, incomplete, or inconsist
    ```json
    "max_retries": 5
    ```
-4. For EDI recipes: high-end cloud models (GPT-4o, Claude Sonnet/Opus, Gemini Pro) are strongly recommended
+4. Feed the failed output back into the next attempt - set `include_prior_output_on_retry: true` in your config, as a top-level key in the recipe YAML, or pass `--include-prior-output-on-retry` at the command line (the CLI wins over both)
+5. If the input comes from a controlled source and pre-conversion verification is the stage that keeps failing, skip it for that recipe:
+   ```yaml
+   verification:
+     enabled: false
+   ```
+6. For EDI recipes: high-end cloud models (GPT-5.x, Claude 5 Opus/Sonnet, Gemini 3.x Pro) are strongly recommended
 
-### `thinking_budget` has no effect / model returns an error with thinking enabled
+### `thinking_budget` has no effect / model rejects `budget_tokens`
 
-**Cause:** `thinking_budget` is supported by Anthropic and Google providers only.  Using it with an OpenAI or local model will cause an error or be silently ignored.  Anthropic also forces `temperature: 1` internally when `thinking_budget` is set - any other temperature value in the config is overridden.
+**Cause:** `thinking_budget` is now the **legacy** way to control reasoning depth.  It still works on older Anthropic and Google models, but current Claude models reject `budget_tokens` outright, and it was never supported on OpenAI or local endpoints.  On models that do still accept it, Anthropic forces `temperature: 1` internally whenever thinking is on - any other temperature in the config is overridden.
 
-**Fix:** Only set `thinking_budget` on agents using an Anthropic or Google provider:
+**Fix:** Use `reasoning_effort` instead - it works across every provider:
 ```json
-{ "name": "Ted Sagan", "provider": "anthropic", "thinking_budget": 8000, "max_tokens": 16000 }
+{ "name": "Ted Sagan", "provider": "anthropic", "reasoning_effort": "high", "max_tokens": 16000 }
 ```
+If you set both keys on the same agent, `reasoning_effort` wins and a warning is written to the log.  UDC01 never sends both on one request.
+
+**If you are staying on `thinking_budget`** for an older model, remember the budget covers thinking *and* output on Anthropic - `max_tokens` has to be large enough for both.
 
 ### `reasoning_effort` has no effect
 
-**Cause:** `reasoning_effort` (`"low"`, `"medium"`, `"high"`) is for OpenAI o-series models only.  It is mutually exclusive with `temperature` - setting both on the same agent causes an error.
+**Cause:** `reasoning_effort` works on **all** providers - Anthropic, Google, OpenAI, and local endpoints on the OpenAI wire format - but the accepted values differ by vendor, and a value the vendor does not recognize is generally ignored rather than rejected.
 
-**Fix:** Use `reasoning_effort` only on OpenAI o-series agents and remove the `temperature` key:
+| Provider | Accepted values |
+|---|---|
+| Anthropic | `low`, `medium`, `high`, `xhigh`, `max` |
+| Google | `minimal`, `low`, `medium`, `high` |
+| OpenAI | `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, `max` (varies by model) |
+| Local / Ollama | Passed through on the OpenAI wire format; gpt-oss honours it, other models may ignore it |
+
+**Fix:** Check the value against the table above, and set it at whichever level you actually intended - provider profile, role-group, or individual agent (most specific wins):
 ```json
-{ "name": "Ted Sagan", "provider": "openai", "model": "o3-mini", "reasoning_effort": "high" }
+{ "name": "Ted Sagan", "provider": "openai", "model": "gpt-5.4-mini", "reasoning_effort": "high" }
 ```
+
+On OpenAI, setting `reasoning_effort` omits `temperature` from the request automatically - the two are mutually exclusive once reasoning is on, so you do not need to remove the key yourself.
+
+Note that whether a hybrid model reasons *at all* (Qwen3.5's `enable_thinking`, for one) is not reachable from config.
+
+### `Response was entirely reasoning, no answer returned`
+
+**Cause:** Nearly every current open model reasons before answering, and that reasoning is charged against the same output budget as the answer.  If the token budget is too low, the model spends all of it thinking, gets cut off before writing anything, and returns empty content.
+
+**Fix:** Raise the output budget.  The shipped `local` and `ollama` profiles set `16000` for exactly this reason:
+```json
+"local": { "base_url": "http://localhost:1234", "default_max_tokens": 16000 }
+```
+Lowering `reasoning_effort` also leaves more of the budget for the answer.
+
+UDC01 strips reasoning content before it parses any tags, so `<think>` blocks and `reasoning_content` fields do not corrupt the `<o>` extraction or the validators' verdicts.  Set `"strip_reasoning": false` on the profile when you want to see exactly what the model emitted.
+
+### `Conversion response missing <o> section`
+
+**Cause:** The conversion agent returned text but did not wrap its output in `<o>...</o>` tags, so there was nothing to extract.  UDC01 logs a warning, reminds the agent about the tags, and retries.
+
+**Fix:**
+- Confirm the recipe's `data_conversion_system_msg` states the `<o></o>` output format explicitly - every cookbook recipe does, and a custom recipe must too
+- Small models are the usual culprit; they drop the wrapper when the output runs long.  Move the conversion agent to a stronger model
+- If it happens on every attempt, check the prompt does not also name a *different* tag - UDC01 extracts `<o>` literally
 
 ### Excel output file is saved as `.txt` with a warning
 
@@ -246,6 +290,16 @@ These tuning patterns help you balance throughput, cost, and reliability for lar
 - **Batch processing** with `--folder` and `--pattern` is faster than running one file at a time in a loop
 
 - **Adjust parallel workers** in config: `"max_parallel_workers": 3` (increase for cloud APIs with generous rate limits, decrease if hitting rate limits)
+
+### `parallel_agents` doesn't speed anything up on a local model
+
+**Cause:** `parallel_agents: true` fires two verification or validation agents at once.  Against a hosted API that roughly halves wall time, because the service handles concurrency.  Against a single loaded local model it does not - the server queues the second request behind the first, and both requests race the same `api_timeout`.
+
+**Fix:** On a single local instance, either turn parallelism off:
+```json
+"parallel_agents": false
+```
+or give `api_timeout` enough room to cover two full generations back to back.
 
 ### High API costs on batch jobs
 

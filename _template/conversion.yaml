@@ -1,4 +1,151 @@
 # UDC01 Conversion Recipe Template
-# Replace this file with your actual conversion YAML
 #
-# Rename this file to match your recipe (e.g., csv_to_pipe.yaml)
+# Rename this file to match your recipe (e.g., invoice_to_json_conv.yaml) and
+# fill in the five prompt fields below.  Every field is a plain string, so the
+# whole recipe is prompt engineering - there is no code to write.
+#
+# Placeholder tokens UDC01 substitutes at runtime:
+#   {<!--Data-->}                    the input file's content
+#   {<!--Output-->}                  the converted output (validation prompts only)
+#   {<!--DateTime-->}                current timestamp
+#   {<!--RunIndex-->}                retry attempt number
+#   {<!--PreviousConversionNotes-->} validator feedback from the failed attempt
+#
+# Required response shapes - UDC01 parses these literally:
+#   conversion   -> <o>...</o>
+#   verification -> <verification><isvalid>True/False</isvalid></verification>
+#   validation   -> <validation><isvalid>True/False</isvalid></validation>
+
+
+# ---------------------------------------------------------------------------
+# Optional runtime keys (both may be omitted; defaults shown)
+# ---------------------------------------------------------------------------
+
+# Skip the 2/3 pre-conversion verification consensus.  Only turn this off when
+# input quality is guaranteed - it saves up to three agent calls per file, and
+# the verification prompts below become unnecessary.
+# verification:
+#   enabled: true
+
+# Feed the previous failed output back to the conversion agent on retry,
+# alongside the validator error messages.  Overrides the config file for this
+# recipe; the --include-prior-output-on-retry CLI flag overrides both.
+# include_prior_output_on_retry: false
+
+
+# ---------------------------------------------------------------------------
+# Conversion - the transformation itself
+# ---------------------------------------------------------------------------
+
+data_conversion_system_msg: |
+  You are a data conversion agent specializing in format transformation.
+  Your task is to convert <SOURCE FORMAT> data into <TARGET FORMAT>.
+
+  The input will be provided within <data></data> tags. Your output must be
+  enclosed in <o></o> tags and contain ONLY the converted data.
+
+  OUTPUT FORMAT
+  <o>
+  <describe the exact target shape - column order, schema, delimiters>
+  </o>
+
+  Conversion requirements:
+  1. <rule - be specific and mechanical; the model follows what you spell out>
+  2. <rule - how to handle missing, malformed, or extra fields>
+  3. <rule - date, number, and encoding normalization>
+
+  WORKED EXAMPLE
+  Input : <a small representative input>
+  Output:
+  <o>
+  <the exact expected output for that input>
+  </o>
+
+  Important:
+  - Do not include any text outside the <o> tags
+  - Do not explain your work or provide commentary
+
+data_conversion_request_msg: |
+  [Current time: {<!--DateTime-->}] [Try Index:{<!--RunIndex-->}] Convert the
+  following data.
+  <previous_conversion_notes>{<!--PreviousConversionNotes-->}</previous_conversion_notes>
+
+  <data>{<!--Data-->}</data>
+
+  Requirements:
+  1. <restate the two or three rules that matter most>
+  2. Only the converted data inside <o> tags, nothing else
+
+
+# ---------------------------------------------------------------------------
+# Verification - checks the INPUT before any conversion runs
+# (not required when verification.enabled is false)
+# ---------------------------------------------------------------------------
+
+data_verification_system_msg: |
+  You are a data verification agent examining input before processing. Your
+  role is to confirm the provided data contains everything the conversion
+  needs.
+
+  Verify that the data within the <data></data> tags:
+  1. <required field, structure, or format marker>
+  2. <what makes the input unconvertible - be explicit>
+  3. Is not empty.
+
+  Return your verification results in this format:
+  <verification>
+    <isvalid>True/False</isvalid>
+    <invalid_msg>Only include this tag with a message if invalid</invalid_msg>
+  </verification>
+
+data_verification_request_msg: |
+  [Current time: {<!--DateTime-->}] Please verify the data provided in the
+  <data> tags.
+
+  <data>{<!--Data-->}</data>
+
+  Provide your verification result as True or False in the <isvalid> tags,
+  with an explanation in <invalid_msg> tags if invalid.
+
+
+# ---------------------------------------------------------------------------
+# Validation - checks the OUTPUT against the input
+# ---------------------------------------------------------------------------
+
+data_validation_system_msg: |
+  You are a data validation agent responsible for ensuring the converted data
+  correctly represents the source.
+
+  Compare the input within <data></data> tags against the output within
+  <o></o> tags.
+
+  MECHANICAL CHECKS (all must pass)
+  1. <structural check - column count, schema conformance, well-formedness>
+  2. <format check - delimiters, quoting, encoding>
+  3. No commentary or extra text appears in the output.
+
+  ACCEPT these as equivalent (do NOT fail for style):
+  - <cosmetic difference that must not trigger a retry>
+
+  FAIL for any of these:
+  - <a dropped, added, or altered record or field>
+  - <a value that changed meaning rather than formatting>
+
+  Return your validation results in this format:
+  <validation>
+    <isvalid>True/False</isvalid>
+    <invalid_msg>Only include this tag with a message if invalid - name the
+    specific defect</invalid_msg>
+  </validation>
+
+data_validation_request_msg: |
+  [Current time: {<!--DateTime-->}] Validate the conversion.
+
+  Original data:
+  <data>{<!--Data-->}</data>
+
+  Converted output:
+  <o>{<!--Output-->}</o>
+
+  Provide your validation result as True or False in the <isvalid> tags, with
+  an explanation in <invalid_msg> tags if invalid.

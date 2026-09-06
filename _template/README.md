@@ -30,8 +30,9 @@ Describe the expected result. Example:
 
 ## Model Requirements
 
-- Model: (e.g., gpt-4o, claude-sonnet, etc.)
-- Config notes: (any special configuration needed)
+- Model: (e.g., any provider, or a named tier such as GPT-5.x / Claude 5 / Gemini 3.x if the recipe needs one)
+- Config notes: (any special configuration needed - `reasoning_effort`, `max_tokens` headroom, dependencies like `pdfplumber`)
+- Runtime keys: (note here if the recipe sets `verification: {enabled: false}` or `include_prior_output_on_retry: true`, and why)
 
 ## Adapt This Recipe
 

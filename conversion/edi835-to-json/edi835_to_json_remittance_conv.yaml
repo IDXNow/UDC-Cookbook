@@ -11,6 +11,9 @@
 # This demonstrates UDC01 handling non-delimited, segment-based EDI input
 # and producing hierarchical JSON output with domain-specific enrichment.
 
+# Deep nested extraction plus code enrichment - showing the agent its rejected output converges faster than the validator message alone.
+include_prior_output_on_retry: true
+
 data_conversion_system_msg: |
   You are a healthcare EDI specialist agent. Your task is to parse an X12 835 (Health Care Claim
   Payment/Advice) transaction and produce structured, enriched JSON output.

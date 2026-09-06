@@ -1,3 +1,8 @@
+# Input is machine-generated SQL from a controlled source, so pre-conversion verification adds up to three agent calls per file and catches nothing.
+# Delete this block if you point the recipe at hand-written or untrusted SQL.
+verification:
+  enabled: false
+
 data_conversion_system_msg: |
   You are a code transformation agent specializing in SQL modification. Your task is to modify a SQL CREATE VIEW statement by adding a customer name lookup via an INNER JOIN to the d_customer dimension table.
 

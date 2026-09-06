@@ -2,6 +2,9 @@
 # Converts X12 EDI 856 format to structured, human-readable JSON
 # Handles hierarchical loops (S/O/T/P/I) and semantic code mapping
 
+# HL loop hierarchy errors are structural - the agent needs to see the tree it built last time to correct it.
+include_prior_output_on_retry: true
+
 data_conversion_system_msg: |
   You are an EDI data conversion agent specializing in X12 856 Advance Ship Notice transformation.
   Your task is to convert EDI 856 data into structured, human-readable JSON format.

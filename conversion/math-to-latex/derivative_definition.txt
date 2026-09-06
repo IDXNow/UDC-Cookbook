@@ -1,0 +1,1 @@
+f'(x) = lim as h -> 0 of (f(x+h) - f(x)) / h
